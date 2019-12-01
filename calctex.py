@@ -1,5 +1,5 @@
-import my_sympy as sym
-import my_sympy.physics.units as u
+import sympy as sym
+import sympy.physics.units as u
 u_m = sym.UnevaluatedExpr(u.m)
 u_s = sym.UnevaluatedExpr(u.s)
 u_kg = sym.UnevaluatedExpr(u.kg)
