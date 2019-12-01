@@ -6,7 +6,7 @@ class Unit:
     '''
     基本的な単位・複雑な単位（Pa）
     # 使い方
-    ```
+    ```py
     m = Unit('m')
     s = Unit('s')
     kg = Unit('kg')
@@ -20,8 +20,10 @@ class Unit:
 
     def __init__(self, e={}):
         '''
+        ```py
         Unit('m')
         Unit({'m':{'d':1, 'e':0}})
+        ```
         '''
         if isinstance(e, dict):
             self.table = e
@@ -40,10 +42,9 @@ class Unit:
         u = Unit(self.table.copy())
         if isinstance(e, Unit):
             u.update_table(e.table)
-            return u
         else:
             u.update_table({kv[0]: {'d': 0, 'e': math.log10(e)} for kv in u.table})
-            return u
+        return u
 
     def __pow__(self, e):
         u = Unit(self.table.copy())
@@ -56,7 +57,7 @@ class Unit:
         return u
 
     def __repr__(self):
-        return '<'+', '.join(map(lambda kv: f"{kv[0]} dim={kv[1]['d']} e=10**{kv[1]['e']}", self.table.items()))+'>'
+        return '<'+', '.join(map(lambda kv: f"[{kv[0]}] dim={kv[1]['d']} e=10**{kv[1]['e']}", self.table.items()))+'>'
 
 
 
