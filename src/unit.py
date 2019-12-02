@@ -18,7 +18,7 @@ class Unit:
     ```
     '''
 
-    def __init__(self, e={}):
+    def __init__(self, e={}, symbol=''):
         '''
         ```py
         Unit('m')
@@ -27,28 +27,36 @@ class Unit:
         '''
         if isinstance(e, dict):
             self.table = e
+            self.symbol = symbol
         elif isinstance(e, str):
             self.table = {e: {'d': 1, 'e': 0}}
+            self.symbol = e
 
-    def update_table(self, target):
+    def update_table(self, target, zero_dim=True):
         for tk, tv in target.items():
             v = self.table.get(tk, {})
-            self.table[tk] = {
-                'd': v.get('d', 0)+tv['d'],
-                'e': v.get('e', 0)+tv['e'],
-            }
+            d = v.get('d', 0)+tv['d']
+            e = v.get('e', 0)+tv['e']
+
+            if not zero_dim or d != 0:
+                self.table[tk] = {'d': d, 'e': e}
+
+    def __rmul__(self, e):
+        return self.clone() * e
 
     def __mul__(self, e):
-        u = Unit(self.table.copy())
+        u = self.clone()
         if isinstance(e, Unit):
+            u.symbol = u.symbol + e.symbol
             u.update_table(e.table)
         else:
-            u.update_table({kv[0]: {'d': 0, 'e': math.log10(e)} for kv in u.table})
+            u.update_table({k: {'d': 0, 'e': math.log10(e)} for k in u.table.keys()})
         return u
 
     def __pow__(self, e):
         u = Unit(self.table.copy())
         for tk, tv in u.table.items():
+            u.symbol += f'{tk}^{e}'
             v = u.table.get(tk, {})
             u.table[tk] = {
                 'd': v.get('d', 1)*e,
@@ -56,19 +64,56 @@ class Unit:
             }
         return u
 
+    def __truediv__(self, e):
+        return self.clone() * e**-1
+
     def __repr__(self):
-        return '<'+', '.join(map(lambda kv: f"[{kv[0]}] dim={kv[1]['d']} e=10**{kv[1]['e']}", self.table.items()))+'>'
+        return '<(' + self.symbol + ') '+', '.join(map(lambda kv: f"[{kv[0]}] dim={kv[1]['d']} e={kv[1]['e']}", self.table.items()))+'>'
 
+    def is_same_dim(self, u):
+        if len(u.table.keys()) != len(self.table.keys()):
+            return False
 
+        for k, v in self.table.items():
+            if not k in u.table or u.table[k]['d'] != v['d']:
+                return False
+
+        return True
+
+    def clone(self):
+        u = Unit(self.table.copy())
+        u.symbol = self.symbol
+        return u
+
+    def mul(self, u):
+        _u = self.clone()
+        _u.update_table(u.table)
+        return _u
+
+    def set_symbol(self, symbol):
+        self.symbol = symbol
+        return self
+
+    def __call__(self, symbol):
+        return self.set_symbol(symbol)
+
+    def asunit(self, u):
+        
+        return
 
 
 isinpackage = not __name__ in ['common', '__main__']
 if not isinpackage:
+    mili = 1e-3
+    micro = 1e-6
+    nano = 1e-9
+
     m = Unit('m')
     s = Unit('s')
     kg = Unit('kg')
-    N = kg * m * s**-2
-    Pa = N * m**-2
-    mm = m * 1e-3
-    nm = m * 1e-9
-    print(N, Pa, m, mm, nm)
+    N = (kg * m * s**-2)('N')
+    Pa = (N * m**-2)
+    nm = nano*m
+    print(Pa)
+    print(nm)
+    print(m/m)
