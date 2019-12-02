@@ -1,5 +1,5 @@
 # from .unit import Unit, Pa
-from unit import Unit, Pa, s, m
+from unit import Unit, Pa, s, m, N
 
 
 class Value:
@@ -35,7 +35,7 @@ class Value:
         if isinstance(e, Value):
             _self = self.clone().normarize_scale()
             _e = e.clone().normarize_scale()
-            return Value(_self.value*_e.value, _self.unit.mul(e.unit))
+            return Value(_self.value*_e.value, _self.unit*e.unit)
         else:
             raise 'illegal addition (ambigant dimention)'
 
@@ -52,9 +52,15 @@ class Value:
     def __repr__(self):
         return f"<{self.value} {self.unit}>"
 
+    def asunit(self, u):
+        return f"<{self.value} {self.unit.asunit(u)}>"
+
 
 isinpackage = not __name__ in ['value', '__main__']
 if not isinpackage:
-    l = Value(1.0, m)
-    t = Value(2.0, s)
-    print(l/t)
+
+    p = Value(3.0, Pa)
+    s = Value(1.0, m**2)
+    f = p*s
+    print(f.asunit(N))
+    # <3.0 <N>>

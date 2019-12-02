@@ -38,8 +38,8 @@ class Unit:
             d = v.get('d', 0)+tv['d']
             e = v.get('e', 0)+tv['e']
 
-            if not zero_dim or d != 0:
-                self.table[tk] = {'d': d, 'e': e}
+            # if not zero_dim or d != 0:
+            self.table[tk] = {'d': d, 'e': e}
 
     def __rmul__(self, e):
         return self.clone() * e
@@ -86,26 +86,21 @@ class Unit:
 
     def to_expr(self):
         obj = {
-            0 : '',
-            -3 : 'm',
-            -6 : 'μ',
-            -9 : 'n',
+            0: '',
+            -3: 'm',
+            -6: 'μ',
+            -9: 'n',
         }
         result = ''
         for k, v in self.table.items():
-            result += obj[v['e']] + k + (f"{v['d']}" if (v['d']!=0 and v['d']!=1) else "")
+            if v['d'] != 0:
+                result += obj[v['e']] + k + (f"{v['d']}" if (v['d'] != 1) else "")
         return result
 
     def clone(self):
         u = Unit(self.table.copy())
         u.symbol = self.symbol
         return u
-
-    def mul(self, u):
-        _u = self.clone()
-        _u.symbol = None
-        _u.update_table(u.table)
-        return _u
 
     def set_symbol(self, symbol):
         self.symbol = symbol
@@ -122,8 +117,13 @@ class Unit:
             self.table[k]['e'] = 0
 
     def asunit(self, u):
+        _self = self.clone()
+        _u = u.clone()
 
-        return
+        ru = _self / _u
+        ru.table[u.symbol] = {'d': 1, 'e': 0}
+
+        return ru
 
     def __eq__(self, u):
         if len(u.table.keys()) != len(self.table.keys()):
