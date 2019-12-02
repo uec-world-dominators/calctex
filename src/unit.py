@@ -46,8 +46,8 @@ class Unit:
 
     def __mul__(self, e):
         u = self.clone()
+        u.symbol = None
         if isinstance(e, Unit):
-            u.symbol = u.symbol + e.symbol
             u.update_table(e.table)
         else:
             u.update_table({k: {'d': 0, 'e': math.log10(e)} for k in u.table.keys()})
@@ -55,8 +55,8 @@ class Unit:
 
     def __pow__(self, e):
         u = Unit(self.table.copy())
+        u.symbol = None
         for tk, tv in u.table.items():
-            u.symbol += f'{tk}^{e}'
             v = u.table.get(tk, {})
             u.table[tk] = {
                 'd': v.get('d', 1)*e,
@@ -68,7 +68,11 @@ class Unit:
         return self.clone() * e**-1
 
     def __repr__(self):
-        return '<(' + self.symbol + ') '+', '.join(map(lambda kv: f"[{kv[0]}] dim={kv[1]['d']} e={kv[1]['e']}", self.table.items()))+'>'
+        if self.symbol:
+            return f"<{self.symbol}>"
+        else:
+            return f"<{self.to_expr()}>"
+            # return '<' + ' '.join(map(lambda kv: f"[{kv[0]}] dim={kv[1]['d']} e={kv[1]['e']}", self.table.items()))+'>'
 
     def is_same_dim(self, u):
         if len(u.table.keys()) != len(self.table.keys()):
@@ -80,6 +84,18 @@ class Unit:
 
         return True
 
+    def to_expr(self):
+        obj = {
+            0 : '',
+            -3 : 'm',
+            -6 : 'μ',
+            -9 : 'n',
+        }
+        result = ''
+        for k, v in self.table.items():
+            result += obj[v['e']] + k + (f"{v['d']}" if (v['d']!=0 and v['d']!=1) else "")
+        return result
+
     def clone(self):
         u = Unit(self.table.copy())
         u.symbol = self.symbol
@@ -87,6 +103,7 @@ class Unit:
 
     def mul(self, u):
         _u = self.clone()
+        _u.symbol = None
         _u.update_table(u.table)
         return _u
 
@@ -97,23 +114,44 @@ class Unit:
     def __call__(self, symbol):
         return self.set_symbol(symbol)
 
+    def get_scale(self):
+        return functools.reduce(lambda i, v: i+v['e'], self.table.values(), 0)
+
+    def scale_zero(self):
+        for k, v in self.table.items():
+            self.table[k]['e'] = 0
+
     def asunit(self, u):
-        
+
         return
 
+    def __eq__(self, u):
+        if len(u.table.keys()) != len(self.table.keys()):
+            return False
 
-isinpackage = not __name__ in ['common', '__main__']
-if not isinpackage:
-    mili = 1e-3
-    micro = 1e-6
-    nano = 1e-9
+        for k, v in self.table.items():
+            if not k in u.table or u.table[k]['d'] != v['d'] or u.table[k]['e'] != v['e']:
+                return False
 
-    m = Unit('m')
-    s = Unit('s')
-    kg = Unit('kg')
-    N = (kg * m * s**-2)('N')
-    Pa = (N * m**-2)
-    nm = nano*m
-    print(Pa)
-    print(nm)
-    print(m/m)
+        return True
+
+    def __ne__(self, u):
+        return not self == u
+
+
+mili = 1e-3
+micro = 1e-6
+nano = 1e-9
+
+m = Unit('m')
+s = Unit('s')
+kg = Unit('kg')
+N = (kg * m * s**-2)('N')
+Pa = (N * m**-2)('Pa')
+nm = nano*m
+
+# isinpackage = not __name__ in ['unit', '__main__']
+# if not isinpackage:
+#     print(Pa)
+#     print(nm)
+#     print(m/m)
