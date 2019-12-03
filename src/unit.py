@@ -18,6 +18,7 @@ class Unit:
     ```
     '''
 
+    # self.
     def __init__(self, e={}, symbol=''):
         '''
         ```py
@@ -72,7 +73,6 @@ class Unit:
             return f"<{self.symbol}>"
         else:
             return f"<{self.to_expr()}>"
-            # return '<' + ' '.join(map(lambda kv: f"[{kv[0]}] dim={kv[1]['d']} e={kv[1]['e']}", self.table.items()))+'>'
 
     def is_same_dim(self, u):
         if len(u.table.keys()) != len(self.table.keys()):
@@ -86,6 +86,7 @@ class Unit:
 
     def to_expr(self):
         obj = {
+            3: 'k',
             0: '',
             -3: 'm',
             -6: 'μ',
@@ -94,7 +95,7 @@ class Unit:
         result = ''
         for k, v in self.table.items():
             if v['d'] != 0:
-                result += obj[v['e']] + k + (f"{v['d']}" if (v['d'] != 1) else "")
+                result += obj[v['e']] + k + (str(v['d']) if (v['d'] != 1) else "")
         return result
 
     def clone(self):
@@ -117,6 +118,7 @@ class Unit:
             self.table[k]['e'] = 0
 
     def asunit(self, u):
+        print(u.table)
         _self = self.clone()
         _u = u.clone()
 

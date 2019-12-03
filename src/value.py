@@ -1,5 +1,5 @@
 # from .unit import Unit, Pa
-from unit import Unit, Pa, s, m, N
+from unit import Unit, Pa, s, m, N,mili,nano,micro
 
 
 class Value:
@@ -59,8 +59,8 @@ class Value:
 isinpackage = not __name__ in ['value', '__main__']
 if not isinpackage:
 
-    p = Value(3.0, Pa)
+    p = Value(3.0,nano*Pa)
     s = Value(1.0, m**2)
     f = p*s
-    print(f.asunit(N))
+    print(f.asunit((mili*N)('mN')))
     # <3.0 <N>>
