@@ -1,3 +1,5 @@
+isinpackage = not __name__ in ['unit', '__main__']
+
 import math
 import functools
 
@@ -18,52 +20,49 @@ class Unit:
     ```
     '''
 
-    # self.
     def __init__(self, e={}, symbol=''):
         '''
         ```py
         Unit('m')
-        Unit({'m':{'d':1, 'e':0}})
+        Unit({'m':2,'s':1})
         ```
         '''
         if isinstance(e, dict):
             self.table = e
+            self.e = 0
             self.symbol = symbol
         elif isinstance(e, str):
-            self.table = {e: {'d': 1, 'e': 0}}
+            self.table = {e: 1}
+            self.e = 0
             self.symbol = e
 
-    def update_table(self, target, zero_dim=True):
-        for tk, tv in target.items():
-            v = self.table.get(tk, {})
-            d = v.get('d', 0)+tv['d']
-            e = v.get('e', 0)+tv['e']
-
-            # if not zero_dim or d != 0:
-            self.table[tk] = {'d': d, 'e': e}
-
-    def __rmul__(self, e):
-        return self.clone() * e
+    def clone(self):
+        u = Unit(self.table.copy())
+        u.symbol = self.symbol
+        u.e = self.e
+        return u
 
     def __mul__(self, e):
         u = self.clone()
         u.symbol = None
         if isinstance(e, Unit):
-            u.update_table(e.table)
+            u.e += e.e
+            for key, value in e.table.items():
+                u.table[key] = u.table.get(key, 0) + e.table[key]
         else:
-            u.update_table({k: {'d': 0, 'e': math.log10(e)} for k in u.table.keys()})
+            u.e += math.log10(e)
         return u
 
     def __pow__(self, e):
-        u = Unit(self.table.copy())
+        u = self.clone()
         u.symbol = None
-        for tk, tv in u.table.items():
-            v = u.table.get(tk, {})
-            u.table[tk] = {
-                'd': v.get('d', 1)*e,
-                'e': v.get('e', 0)*e,
-            }
+        u.e *= e
+        for k in u.table.keys():
+            u.table[k] *= e
         return u
+
+    def __rmul__(self, e):
+        return self.clone() * e
 
     def __truediv__(self, e):
         return self.clone() * e**-1
@@ -74,65 +73,25 @@ class Unit:
         else:
             return f"<{self.to_expr()}>"
 
-    def is_same_dim(self, u):
-        if len(u.table.keys()) != len(self.table.keys()):
-            return False
-
-        for k, v in self.table.items():
-            if not k in u.table or u.table[k]['d'] != v['d']:
-                return False
-
-        return True
-
-    def to_expr(self):
-        obj = {
-            3: 'k',
-            0: '',
-            -3: 'm',
-            -6: 'μ',
-            -9: 'n',
-        }
-        result = ''
-        for k, v in self.table.items():
-            if v['d'] != 0:
-                result += obj[v['e']] + k + (str(v['d']) if (v['d'] != 1) else "")
-        return result
-
-    def clone(self):
-        u = Unit(self.table.copy())
-        u.symbol = self.symbol
-        return u
-
-    def set_symbol(self, symbol):
+    def __call__(self, symbol):
+        '''
+        シンボルを設定する
+        ```
+        Pa = (N * m**-2)('Pa')
+        ```
+        '''
         self.symbol = symbol
         return self
 
-    def __call__(self, symbol):
-        return self.set_symbol(symbol)
-
-    def get_scale(self):
-        return functools.reduce(lambda i, v: i+v['e'], self.table.values(), 0)
-
-    def scale_zero(self):
-        for k, v in self.table.items():
-            self.table[k]['e'] = 0
-
-    def asunit(self, u):
-        print(u.table)
-        _self = self.clone()
-        _u = u.clone()
-
-        ru = _self / _u
-        ru.table[u.symbol] = {'d': 1, 'e': 0}
-
-        return ru
-
     def __eq__(self, u):
-        if len(u.table.keys()) != len(self.table.keys()):
+        '''
+        次元・倍分量まで等しいか確認する
+        '''
+        if len(u.table.keys()) != len(self.table.keys()) or self.e != u.e:
             return False
 
         for k, v in self.table.items():
-            if not k in u.table or u.table[k]['d'] != v['d'] or u.table[k]['e'] != v['e']:
+            if not k in u.table or u.table[k] != v:
                 return False
 
         return True
@@ -140,20 +99,86 @@ class Unit:
     def __ne__(self, u):
         return not self == u
 
+    def is_same_dim(self, u):
+        '''
+        次元が等しいか確認する。倍量分量については確認しない
+        '''
+        if len(u.table.keys()) != len(self.table.keys()):
+            return False
 
+        for k, v in self.table.items():
+            if not k in u.table or u.table[k] != v:
+                return False
+
+        return True
+
+    def to_expr(self):
+        prefix = {
+            12: 'T',
+            9: 'G',
+            6: 'M',
+            3: 'k',
+            0: '',
+            -3: 'm',
+            -6: 'μ',
+            -9: 'n',
+            -12: 'p',
+        }
+        result = prefix[self.e]
+        for k, v in self.table.items():
+            if v != 0:
+                result += k + (str(v) if (v != 1) else "")
+        return result
+
+    def get_scale(self):
+        return self.e
+
+    def scale_zero(self):
+        self.e = 0
+        return self
+
+    def expect(self, *us):
+        '''
+        現れるべき単位を指定する
+        ```
+        u.expect(N**-1, (mili*Pa)('mPa'))
+        ```
+        '''
+        _self = self.clone()
+        for u in us:
+            _self = _self/u
+            if not u.symbol:
+                raise f'ERROR: symbol not defined for {_self}'
+            _self.table[u.symbol] = _self.table.get(u.symbol, 0) + 1
+
+        return _self
+
+
+kilo = 1e3
+hecto = 1e2
+centi = 1e1
 mili = 1e-3
 micro = 1e-6
 nano = 1e-9
 
 m = Unit('m')
-s = Unit('s')
 kg = Unit('kg')
+s = Unit('s')
+A = Unit('A')
+
 N = (kg * m * s**-2)('N')
 Pa = (N * m**-2)('Pa')
-nm = nano*m
 
-# isinpackage = not __name__ in ['unit', '__main__']
-# if not isinpackage:
-#     print(Pa)
-#     print(nm)
-#     print(m/m)
+C = (A*s)('C')
+J = (N*m)('J')
+V = (J/C)('V')
+F = (C/V)('F')
+W = (V*A)('W')
+Wb = (V*s)('Wb')
+T = (Wb/m**-2)('T')
+H = (Wb/A)('H')
+Omega = (V/A)('Ω')
+
+if not isinpackage:
+    print(((nano*m*s)/(mili*m)))
+    print((nano*N*Pa*m).expect(N, (mili*Pa)('mPa')))

@@ -1,8 +1,18 @@
-# from .unit import Unit, Pa
-from unit import Unit, Pa, s, m, N,mili,nano,micro
+isinpackage = not __name__ in ['unit', '__main__']
+if isinpackage:
+    from .unit import *
+else:
+    from unit import *
 
 
 class Value:
+    '''
+    単位と数値を合わせた意味のある値を保持する
+    ```
+    l = Value(1.0, m) # 1.0m
+    ```
+    '''
+
     def __init__(self, value, unit):
         self.value = value
         self.unit = unit
@@ -52,15 +62,21 @@ class Value:
     def __repr__(self):
         return f"<{self.value} {self.unit}>"
 
-    def asunit(self, u):
-        return f"<{self.value} {self.unit.asunit(u)}>"
+    def expect(self, *u):
+        unit = self.unit.expect(*u)
+        return f"<{self.value*10**unit.get_scale()} {unit.scale_zero()}>"
 
 
 isinpackage = not __name__ in ['value', '__main__']
 if not isinpackage:
+    # 新しい単位
+    nN = (nano*N)('nN')
 
-    p = Value(3.0,nano*Pa)
+    p = Value(3.0, nano*Pa)
     s = Value(1.0, m**2)
     f = p*s
-    print(f.asunit((mili*N)('mN')))
-    # <3.0 <N>>
+
+    print(f)
+    # <3.0000000000000004e-09 <kgms-2>>
+    print(f.expect(nN))
+    # <3.0000000000000004 <nN>>
