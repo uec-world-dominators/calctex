@@ -1,7 +1,6 @@
-isinpackage = not __name__ in ['unit', '__main__']
-
-import math
 import functools
+import math
+isinpackage = not __name__ in ['unit', '__main__']
 
 
 class Unit:
@@ -27,6 +26,7 @@ class Unit:
         Unit({'m':2,'s':1})
         ```
         '''
+        self.priorities = []
         if isinstance(e, dict):
             self.table = e
             self.e = 0
@@ -39,6 +39,7 @@ class Unit:
     def clone(self):
         u = Unit(self.table.copy())
         u.symbol = self.symbol
+        u.priorities = self.priorities.copy()
         u.e = self.e
         return u
 
@@ -112,7 +113,10 @@ class Unit:
 
         return True
 
-    def to_expr(self):
+    def is_zero_dim(self):
+        return len(self.table) == 0
+
+    def to_expr(self, tex=False):
         prefix = {
             12: 'T',
             9: 'G',
@@ -124,11 +128,22 @@ class Unit:
             -9: 'n',
             -12: 'p',
         }
-        result = prefix[self.e]
-        for k, v in self.table.items():
-            if v != 0:
-                result += k + (str(v) if (v != 1) else "")
-        return result
+        symbols = []
+
+        _self = self.clone()
+        for symbol in _self.priorities:
+            if symbol in _self.table:
+                symbols.append((symbol, _self.table[symbol]))
+                _self.table[symbol] = 0
+
+        result = prefix[_self.e]
+        for k, dim in [*symbols, *_self.table.items()]:
+            if dim != 0:
+                if tex:
+                    result += k + (f"^{{{str(dim)}}}" if (dim != 1) else "")
+                else:
+                    result += k + (str(dim) if (dim != 1) else "")
+        return f"\\mathrm{{{result}}}" if tex else result
 
     def get_scale(self):
         return self.e
@@ -137,38 +152,58 @@ class Unit:
         self.e = 0
         return self
 
+    def inverse_scale(self):
+        self.e *= -1
+        return self
+
+    def set_scale(self, e):
+        self.e = e
+        return self
+
     def expect(self, *us):
         '''
-        現れるべき単位を指定する
+        現れるべき単位・スケールを指定する
         ```
         u.expect(N**-1, (mili*Pa)('mPa'))
         ```
         '''
         _self = self.clone()
+        _self.priorities = []
         for u in us:
             _self = _self/u
-            if not u.symbol:
-                raise f'ERROR: symbol not defined for {_self}'
-            _self.table[u.symbol] = _self.table.get(u.symbol, 0) + 1
-
+            if not u.is_zero_dim():
+                if not u.symbol:
+                    raise f'ERROR: symbol not defined for {_self}'
+                _self.table[u.symbol] = _self.table.get(u.symbol, 0) + 1
+                _self.priorities.append(u.symbol)
         return _self
 
+    def totex(self):
+        return self.to_expr(tex=True)
 
-kilo = 1e3
-hecto = 1e2
-centi = 1e1
-mili = 1e-3
-micro = 1e-6
-nano = 1e-9
+    @staticmethod
+    def sum_scale(us):
+        return functools.reduce(lambda i, u: i+u.e, us, 0)
 
+
+# Scale
+zerodim = Unit({})
+kilo = (1e3 * zerodim)('k')
+hecto = (1e2 * zerodim)('h')
+centi = (1e1 * zerodim)('c')
+mili = (1e-3 * zerodim)('mili')
+micro = (1e-6 * zerodim)('μ')
+nano = (1e-9 * zerodim)('n')
+
+# MKSA Basic Units
 m = Unit('m')
 kg = Unit('kg')
 s = Unit('s')
 A = Unit('A')
 
+# Units
 N = (kg * m * s**-2)('N')
 Pa = (N * m**-2)('Pa')
-
 C = (A*s)('C')
 J = (N*m)('J')
 V = (J/C)('V')
@@ -179,6 +214,7 @@ T = (Wb/m**-2)('T')
 H = (Wb/A)('H')
 Omega = (V/A)('Ω')
 
-if not isinpackage:
-    print(((nano*m*s)/(mili*m)))
-    print((nano*N*Pa*m).expect(N, (mili*Pa)('mPa')))
+# if not isinpackage:
+#     print(((nano*m*s)/(mili*m)))
+#     print(nano*N*Pa*m)
+#     print((nano*N*Pa*m**-1).expect((mili*Pa)('mPa'), N).to_expr(tex=True))
