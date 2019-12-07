@@ -1,4 +1,6 @@
-isinpackage = not __name__ in ['unit', '__main__']
+import math
+isinpackage = not __name__ in ['value', '__main__']
+
 if isinpackage:
     from .unit import *
     from .common import roundtex
@@ -15,12 +17,13 @@ class Value:
     ```
     '''
 
-    def __init__(self, value, unit=Unit({})):
+    def __init__(self, value, unit=Unit({}), digits=math.inf):
         self.value = value
         self.unit = unit
+        self.digits = digits
 
     def clone(self):
-        return Value(self.value, self.unit.clone())
+        return Value(self.value, self.unit.clone(), self.digits)
 
     def normarize_scale(self):
         e = self.unit.get_scale()
@@ -37,12 +40,13 @@ class Value:
                 else:
                     _self = self
                     _e = e
-                return Value(_self.value + _e.value, _self.unit)
+                digits = min(_self.digits, _e.digits)
+                return Value(_self.value + _e.value, _self.unit, digits)
             else:
                 raise 'illegal addition (different dimention)'
         else:
             if self.unit.is_zero_dim():
-                return Value(self.value + e, self.unit.clone())
+                return Value(self.value + e, self.unit.clone(), self.digits)
             else:
                 raise 'illegal addition (ambigant dimention)'
 
@@ -50,9 +54,10 @@ class Value:
         _self = self.clone().normarize_scale()
         if isinstance(e, Value):
             _e = e.clone().normarize_scale()
-            return Value(_self.value*_e.value, _self.unit*e.unit)
+            digits = min(_self.digits, _e.digits)
+            return Value(_self.value*_e.value, _self.unit*e.unit, digits)
         else:
-            return Value(_self.value*e, _self.unit)
+            return Value(_self.value*e, _self.unit, _self.digits)
 
     def __pow__(self, e):
         if isinstance(e, Value):
@@ -62,9 +67,8 @@ class Value:
                 raise "pow with not zero dimention value"
         else:
             _e = e
-
         _self = self.clone().normarize_scale()
-        return Value(_self.value**_e, _self.unit**_e)
+        return Value(_self.value**_e, _self.unit**_e, _self.digits)
 
     def __truediv__(self, e):
         return self * e**-1
@@ -96,10 +100,10 @@ class Value:
     def expect(self, *us):
         _unit = self.unit.expect(*us)
         return Value(self.value*10**_unit.get_scale(),
-                     _unit.set_scale(Unit.sum_scale(us)))
+                     _unit.set_scale(Unit.sum_scale(us)), self.digits)
 
-    def totex(self, digits, unit=True):
-        return f"{roundtex(self.value,digits)}{self.unit.totex() if unit else ''}"
+    def totex(self, digits=None, unit=True):
+        return f"{roundtex(self.value,self.digits if digits==None else digits)}{self.unit.totex() if unit else ''}"
 
 
 isinpackage = not __name__ in ['value', '__main__']
@@ -119,3 +123,12 @@ if not isinpackage:
     a = Value(1, nano * s)
     print(a.totex(4))
     print(a.expect(s).totex(2))
+
+    # lambda_ = Calc([Value(300, m), Value(400, m)])
+    # # [300, 400]*m
+    # 300 * m
+    # f = Calc([Value(170, Hz), Value(340, Hz)])
+
+    # v = f * lambda_  # Calc
+    # print(v.tex(['v_1', 'v_2'])[0])  # 'v_1 = ...'
+    # print(v.value())
