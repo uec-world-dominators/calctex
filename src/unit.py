@@ -50,9 +50,14 @@ class Unit:
             u.e += e.e
             for key, value in e.table.items():
                 u.table[key] = u.table.get(key, 0) + e.table[key]
+            return u
         else:
-            u.e += math.log10(e)
-        return u
+            if isinpackage:
+                from .value import Value
+            else:
+                from value import Value
+            return Value(e, self)
+            # u.e += math.log10(e)
 
     def __pow__(self, e):
         u = self.clone()
@@ -67,6 +72,9 @@ class Unit:
 
     def __truediv__(self, e):
         return self.clone() * e**-1
+    
+    def __rtruediv__(self, e):
+        return self.clone()**-1 * e
 
     def __repr__(self):
         if self.symbol:
@@ -124,7 +132,7 @@ class Unit:
             3: 'k',
             0: '',
             -3: 'm',
-            -6: 'μ',
+            -6: '\\mu' if tex else 'μ',
             -9: 'n',
             -12: 'p',
         }
@@ -188,12 +196,12 @@ class Unit:
 
 # Scale
 zerodim = Unit({})
-kilo = (1e3 * zerodim)('k')
-hecto = (1e2 * zerodim)('h')
-centi = (1e1 * zerodim)('c')
-mili = (1e-3 * zerodim)('mili')
-micro = (1e-6 * zerodim)('μ')
-nano = (1e-9 * zerodim)('n')
+kilo = zerodim.set_scale(3)('k')
+hecto = zerodim.set_scale(2)('h')
+centi = zerodim.set_scale(1)('c')
+mili = zerodim.set_scale(-3)('m')
+micro = zerodim.set_scale(-6)('μ')
+nano = zerodim.set_scale(-9)('n')
 
 # MKSA Basic Units
 m = Unit('m')
@@ -213,6 +221,7 @@ Wb = (V*s)('Wb')
 T = (Wb/m**-2)('T')
 H = (Wb/A)('H')
 Omega = (V/A)('Ω')
+Hz = (s**-1)('Hz')
 
 # if not isinpackage:
 #     print(((nano*m*s)/(mili*m)))
