@@ -1,5 +1,7 @@
 # CalcTeX(開発中)
 
+![](https://github.com/uec-world-dominators/calctex/workflows/Python%20package%20CI/badge.svg)
+
 ```py
 lambda_ = Calc([Value(300, m), Value(400, m)])
 # [300, 400]*m
