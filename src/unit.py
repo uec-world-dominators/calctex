@@ -1,7 +1,5 @@
 import functools
 import math
-isinpackage = not __name__ in ['unit', '__main__']
-
 
 class Unit:
     '''
@@ -52,12 +50,8 @@ class Unit:
                 u.table[key] = u.table.get(key, 0) + e.table[key]
             return u
         else:
-            if isinpackage:
-                from .value import Value
-            else:
-                from value import Value
+            from .value import Value
             return Value(e, self)
-            # u.e += math.log10(e)
 
     def __pow__(self, e):
         u = self.clone()
@@ -222,8 +216,3 @@ T = (Wb/m**-2)('T')
 H = (Wb/A)('H')
 Omega = (V/A)('Ω')
 Hz = (s**-1)('Hz')
-
-# if not isinpackage:
-#     print(((nano*m*s)/(mili*m)))
-#     print(nano*N*Pa*m)
-#     print((nano*N*Pa*m**-1).expect((mili*Pa)('mPa'), N).to_expr(tex=True))

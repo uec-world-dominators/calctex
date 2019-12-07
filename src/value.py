@@ -1,13 +1,6 @@
 import math
-isinpackage = not __name__ in ['value', '__main__']
-
-if isinpackage:
-    from .unit import *
-    from .common import roundtex
-else:
-    from unit import *
-    from common import roundtex
-
+from .unit import *
+from .common import roundtex
 
 class Value:
     '''
@@ -104,31 +97,3 @@ class Value:
 
     def totex(self, digits=None, unit=True):
         return f"{roundtex(self.value,self.digits if digits==None else digits)}{self.unit.totex() if unit else ''}"
-
-
-isinpackage = not __name__ in ['value', '__main__']
-if not isinpackage:
-    # # 新しい単位
-    # nN = (nano*N)('nN')
-
-    # p = Value(3.0, nano*Pa)
-    # s = Value(1.0, m**2)
-    # f = p*s*10
-
-    # print(f)
-    # # <3.0000000000000004e-09 <kgms-2>>
-    # print(f.expect(nN))
-    # # <3.0000000000000004 <nN>>
-
-    a = Value(1, nano * s)
-    print(a.totex(4))
-    print(a.expect(s).totex(2))
-
-    # lambda_ = Calc([Value(300, m), Value(400, m)])
-    # # [300, 400]*m
-    # 300 * m
-    # f = Calc([Value(170, Hz), Value(340, Hz)])
-
-    # v = f * lambda_  # Calc
-    # print(v.tex(['v_1', 'v_2'])[0])  # 'v_1 = ...'
-    # print(v.value())
