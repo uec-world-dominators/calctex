@@ -1,4 +1,3 @@
-import math
 import sympy as sym
 import sympy.physics.units as u
 import common
@@ -13,6 +12,7 @@ o = {
     's': {'d': 1, 'e': 1},
 }
 
+
 class Value:
     '''
     数値と単位の演算
@@ -26,14 +26,17 @@ class Value:
         if units:
             for i, j in units.item:
                 if j["d"] != 0 and j["d"] != 1:
-                    tex_units += str(i) + f"^{{{i["d"]}}}"
+                    tex_units += str(i) + f"^{{{i['d']}}}"
                 elif j["d"] == 0:
                     tex_units += ""
                 elif j["d"] == 1:
                     tex_units += str(i)
-        self.tex = common(value) + " \, " + tex_units
+        self.tex = common(value) + " \\, " + tex_units
+
     def __repr__(self):
         return self.tex
+
+
 print(Value(10, 4, o))
 
 
@@ -42,7 +45,7 @@ class Calc:
         self.value = value
         self.prec = prec
         if tex:
-            self.tex =
+            # self.tex =
             self.tex = sym.latex(value)
         self.parentheses = parentheses
 

@@ -1,5 +1,5 @@
 import functools
-import math
+
 
 class Unit:
     '''
@@ -66,7 +66,7 @@ class Unit:
 
     def __truediv__(self, e):
         return self.clone() * e**-1
-    
+
     def __rtruediv__(self, e):
         return self.clone()**-1 * e
 
@@ -94,7 +94,7 @@ class Unit:
             return False
 
         for k, v in self.table.items():
-            if not k in u.table or u.table[k] != v:
+            if k not in u.table or u.table[k] != v:
                 return False
 
         return True
@@ -110,7 +110,7 @@ class Unit:
             return False
 
         for k, v in self.table.items():
-            if not k in u.table or u.table[k] != v:
+            if k not in u.table or u.table[k] != v:
                 return False
 
         return True
@@ -172,7 +172,7 @@ class Unit:
         _self = self.clone()
         _self.priorities = []
         for u in us:
-            _self = _self/u
+            _self = _self / u
             if not u.is_zero_dim():
                 if not u.symbol:
                     raise f'ERROR: symbol not defined for {_self}'
@@ -185,7 +185,7 @@ class Unit:
 
     @staticmethod
     def sum_scale(us):
-        return functools.reduce(lambda i, u: i+u.e, us, 0)
+        return functools.reduce(lambda i, u: i + u.e, us, 0)
 
 
 # Scale
@@ -206,13 +206,13 @@ A = Unit('A')
 # Units
 N = (kg * m * s**-2)('N')
 Pa = (N * m**-2)('Pa')
-C = (A*s)('C')
-J = (N*m)('J')
-V = (J/C)('V')
-F = (C/V)('F')
-W = (V*A)('W')
-Wb = (V*s)('Wb')
-T = (Wb/m**-2)('T')
-H = (Wb/A)('H')
-Omega = (V/A)('Ω')
-Hz = (s**-1)('Hz')
+C = (A * s)('C')
+J = (N * m)('J')
+V = (J / C)('V')
+F = (C / V)('F')
+W = (V * A)('W')
+Wb = (V * s)('Wb')
+T = (Wb / m ** -2)('T')
+H = (Wb / A)('H')
+Omega = (V / A)('Ω')
+Hz = (s ** -1)('Hz')

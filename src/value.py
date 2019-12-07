@@ -1,6 +1,7 @@
 import math
-from .unit import *
+from .unit import Unit
 from .common import roundtex
+
 
 class Value:
     '''
@@ -48,9 +49,9 @@ class Value:
         if isinstance(e, Value):
             _e = e.clone().normarize_scale()
             digits = min(_self.digits, _e.digits)
-            return Value(_self.value*_e.value, _self.unit*e.unit, digits)
+            return Value(_self.value * _e.value, _self.unit * e.unit, digits)
         else:
-            return Value(_self.value*e, _self.unit, _self.digits)
+            return Value(_self.value * e, _self.unit, _self.digits)
 
     def __pow__(self, e):
         if isinstance(e, Value):
@@ -70,7 +71,7 @@ class Value:
         return self + e
 
     def __rsub__(self, e):
-        return self*(-1) + e
+        return self * (-1) + e
 
     def __rmul__(self, e):
         return self * e
@@ -85,14 +86,14 @@ class Value:
             raise "pow with not zero dimention value (self has dimention)"
 
     def __sub__(self, e):
-        return self + (-1)*e
+        return self + (-1) * e
 
     def __repr__(self):
         return f"<{self.value} {self.unit}>"
 
     def expect(self, *us):
         _unit = self.unit.expect(*us)
-        return Value(self.value*10**_unit.get_scale(),
+        return Value(self.value * 10 ** _unit.get_scale(),
                      _unit.set_scale(Unit.sum_scale(us)), self.digits)
 
     def totex(self, digits=None, unit=True):
