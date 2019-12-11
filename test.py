@@ -1,7 +1,9 @@
+import math
 import numpy as np
 from src import Value
 from src.unit import nano, m, s, mili, N, Pa, L
 from src.common import roundtex
+from src.helper import decimal_point
 
 # Common
 assert(roundtex(0, 1) == r'0')
@@ -24,3 +26,14 @@ a = Value(1, L)
 assert(str(a.expect(m)) == r'<0.001 <m3>>')
 
 print('OK')
+
+
+# Delta_d = 0.05 * 1e-3  # m
+# d = np.array([600, 597.5, 578.2, 593.2, 576.3, 589.04]) * 1e-3  # m
+# d = decimal_point([5.0, 50.0, 500.0], -1, m)
+
+# print(d[2].digits)
+
+
+d = np.array([Value(4.0)])
+print(d)

@@ -167,3 +167,9 @@ class Value:
 
     def ceil(self):
         return self.fn(math.ceil)
+
+    def __abs__(self):
+        return self.fn(abs)
+
+    def rint(self):
+        return self.fn(round)
