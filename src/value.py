@@ -98,3 +98,72 @@ class Value:
 
     def totex(self, digits=None, unit=True):
         return f"{roundtex(self.value,self.digits if digits==None else digits)}{self.unit.totex() if unit else ''}"
+
+    def fn(self, fn, zero_dim=True):
+        if self.unit.is_zero_dim():
+            return Value(fn(self.value), self.unit.clone(), self.digits)
+        else:
+            raise "not zero dimention"
+
+    def sin(self):
+        return self.fn(math.sin)
+
+    def cos(self):
+        return self.fn(math.cos)
+
+    def tan(self):
+        return self.fn(math.tan)
+
+    def sinh(self):
+        return self.fn(math.sinh)
+
+    def cosh(self):
+        return self.fn(math.cosh)
+
+    def tanh(self):
+        return self.fn(math.tanh)
+
+    def arcsin(self):
+        return self.fn(math.asin)
+
+    def arccos(self):
+        return self.fn(math.acos)
+
+    def arctan(self):
+        return self.fn(math.atan)
+
+    def arctan2(self):
+        return self.fn(math.atan2)
+
+    def arcsinh(self):
+        return self.fn(math.asinh)
+
+    def arccosh(self):
+        return self.fn(math.acosh)
+
+    def arctanh(self):
+        return self.fn(math.atanh)
+
+    def exp(self):
+        return self.fn(math.exp)
+
+    def log(self):
+        return self.fn(math.log)
+
+    def log10(self):
+        return self.fn(math.log10)
+
+    def log2(self):
+        return self.fn(math.log2)
+
+    def log1p(self):
+        return self.fn(math.log1p)
+
+    def floor(self):
+        return self.fn(math.floor)
+
+    def trunc(self):
+        return self.fn(math.trunc)
+
+    def ceil(self):
+        return self.fn(math.ceil)
