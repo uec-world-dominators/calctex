@@ -190,12 +190,12 @@ class Unit:
 
 # Scale
 zerodim = Unit({})
-kilo = zerodim.set_scale(3)('k')
-hecto = zerodim.set_scale(2)('h')
-centi = zerodim.set_scale(1)('c')
-mili = zerodim.set_scale(-3)('m')
-micro = zerodim.set_scale(-6)('μ')
-nano = zerodim.set_scale(-9)('n')
+kilo = zerodim.clone().set_scale(3)('k')
+hecto = zerodim.clone().set_scale(2)('h')
+centi = zerodim.clone().set_scale(-2)('c')
+mili = zerodim.clone().set_scale(-3)('m')
+micro = zerodim.clone().set_scale(-6)('μ')
+nano = zerodim.clone().set_scale(-9)('n')
 
 # MKSA Basic Units
 m = Unit('m')
@@ -216,3 +216,4 @@ T = (Wb / m ** -2)('T')
 H = (Wb / A)('H')
 Omega = (V / A)('Ω')
 Hz = (s ** -1)('Hz')
+L = kilo * ((centi * m)**3)('L')
