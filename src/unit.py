@@ -197,11 +197,14 @@ mili = zerodim.clone().set_scale(-3)('m')
 micro = zerodim.clone().set_scale(-6)('μ')
 nano = zerodim.clone().set_scale(-9)('n')
 
-# MKSA Basic Units
+# SI Basic Units
 m = Unit('m')
 kg = Unit('kg')
 s = Unit('s')
 A = Unit('A')
+K = Unit('K')
+mol = Unit('mol')
+cd = Unit('cd')
 
 # Units
 N = (kg * m * s**-2)('N')
