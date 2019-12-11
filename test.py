@@ -1,5 +1,6 @@
+import numpy as np
 from src import Value
-from src.unit import nano, m, s, mili, N, Pa,L
+from src.unit import nano, m, s, mili, N, Pa, L
 from src.common import roundtex
 
 # Common
