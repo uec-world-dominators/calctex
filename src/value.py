@@ -20,17 +20,30 @@ class Value:
         return Value(self.value, self.unit.clone(), self.digits)
 
     def normarize_scale(self):
+        self.unit.symbol = None
         e = self.unit.get_scale()
         self.unit.scale_zero()
         self.value *= 10 ** e
+        return self
+
+    def normarize_linear(self):
+        self.unit.symbol = None
+        self.value = self.value * self.unit.k + self.unit.b
+        self.unit.k = 1
+        self.unit.b = 0
+        return self
+
+    def normarize(self):
+        self.normarize_scale()
+        self.normarize_linear()
         return self
 
     def __add__(self, e):
         if isinstance(e, Value):
             if self.unit.is_same_dim(e.unit):
                 if self.unit != e.unit:
-                    _self = self.clone().normarize_scale()
-                    _e = e.clone().normarize_scale()
+                    _self = self.clone().normarize()
+                    _e = e.clone().normarize()
                 else:
                     _self = self
                     _e = e
@@ -45,9 +58,9 @@ class Value:
                 raise 'illegal addition (ambigant dimention)'
 
     def __mul__(self, e):
-        _self = self.clone().normarize_scale()
+        _self = self.clone().normarize()
         if isinstance(e, Value):
-            _e = e.clone().normarize_scale()
+            _e = e.clone().normarize()
             digits = min(_self.digits, _e.digits)
             return Value(_self.value * _e.value, _self.unit * e.unit, digits)
         else:
@@ -61,7 +74,7 @@ class Value:
                 raise "pow with not zero dimention value"
         else:
             _e = e
-        _self = self.clone().normarize_scale()
+        _self = self.clone().normarize()
         return Value(_self.value**_e, _self.unit**_e, _self.digits)
 
     def __truediv__(self, e):
@@ -92,8 +105,9 @@ class Value:
         return f"<{self.value} {self.unit}>"
 
     def expect(self, *us):
+        self.normarize()
         _unit = self.unit.expect(*us)
-        return Value(self.value * 10 ** _unit.get_scale() * _unit.k + _unit.b,
+        return Value(self.value * 10 ** _unit.get_scale() / _unit.k + _unit.b,
                      _unit.set_scale(Unit.sum_scale(us)), self.digits)
 
     def totex(self, digits=None, unit=True):

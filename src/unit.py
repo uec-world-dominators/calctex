@@ -1,4 +1,5 @@
 import functools
+import math
 
 
 class Unit:
@@ -52,7 +53,6 @@ class Unit:
             raise "error"
         else:
             u.b += e
-            print(e)
             return u
 
     def __mul__(self, e):
@@ -66,7 +66,6 @@ class Unit:
             return u
         else:
             u.k *= e
-            print(e)
             return u
 
     def __pow__(self, e):
@@ -203,10 +202,9 @@ class Unit:
         _self = self.clone()
         _self.priorities = []
         for u in us:
-            if (_self.b or u.b) and len(us) == 1 and _self.is_same_dim(u) and not _self.k and not u.k:
-                pass
-            else:
-                _self = _self / u
+            if (_self.b or u.b) and len(us) == 1 and _self.is_same_dim(u) and _self.k == 1 and u.k == 1:
+                _self.b -= u.b
+            _self = _self / u
 
             if not u.is_zero_dim():
                 if not u.symbol:
@@ -240,6 +238,18 @@ A = Unit('A')
 K = Unit('K')
 mol = Unit('mol')
 cd = Unit('cd')
+
+rad = Unit('rad')
+
+# SI併用単位
+celcius = (273 + K)('℃')
+fahrenheit = (9/5.0 * K - 459.67)('°F')
+minute = (60 * s)('min')
+h = (60 * minute)('hour')
+d = (24 * h)('d')
+arc_degree = ((math.pi/180)*rad)('°')
+arc_minute = (arc_degree / 60)('′')
+arc_second = (arc_minute / 60)('″')
 
 # Units
 N = (kg * m * s**-2)('N')
