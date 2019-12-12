@@ -25,6 +25,8 @@ class Unit:
         ```
         '''
         self.priorities = []
+        self.k = 1
+        self.b = 0
         if isinstance(e, dict):
             self.table = e
             self.e = 0
@@ -39,19 +41,33 @@ class Unit:
         u.symbol = self.symbol
         u.priorities = self.priorities.copy()
         u.e = self.e
+        u.k = self.k
+        u.b = self.b
         return u
+
+    def __add__(self, e):
+        u = self.clone()
+        u.symbol = None
+        if isinstance(e, Unit):
+            raise "error"
+        else:
+            u.b += e
+            print(e)
+            return u
 
     def __mul__(self, e):
         u = self.clone()
         u.symbol = None
         if isinstance(e, Unit):
             u.e += e.e
+            u.k *= e.k
             for key, value in e.table.items():
                 u.table[key] = u.table.get(key, 0) + e.table[key]
             return u
         else:
-            from .value import Value
-            return Value(e, self)
+            u.k *= e
+            print(e)
+            return u
 
     def __pow__(self, e):
         u = self.clone()
@@ -60,6 +76,15 @@ class Unit:
         for k in u.table.keys():
             u.table[k] *= e
         return u
+
+    def __radd__(self, e):
+        return self + e
+
+    def __rsub__(self, e):
+        return self * (-1) + e
+
+    def __sub__(self, e):
+        return self + (-1) * e
 
     def __rmul__(self, e):
         return self.clone() * e
@@ -97,6 +122,9 @@ class Unit:
             if k not in u.table or u.table[k] != v:
                 return False
 
+        if self.k != u.k or self.b != u.b:
+            return False
+
         return True
 
     def __ne__(self, u):
@@ -119,6 +147,9 @@ class Unit:
         return len(self.table) == 0
 
     def to_expr(self, tex=False):
+        '''
+        線形変換については考慮しない（Valueの責任）
+        '''
         prefix = {
             12: 'T',
             9: 'G',
@@ -172,7 +203,11 @@ class Unit:
         _self = self.clone()
         _self.priorities = []
         for u in us:
-            _self = _self / u
+            if (_self.b or u.b) and len(us) == 1 and _self.is_same_dim(u) and not _self.k and not u.k:
+                pass
+            else:
+                _self = _self / u
+
             if not u.is_zero_dim():
                 if not u.symbol:
                     raise f'ERROR: symbol not defined for {_self}'

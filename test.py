@@ -1,9 +1,6 @@
-import math
-import numpy as np
 from src import Value
-from src.unit import nano, m, s, mili, N, Pa, L
+from src.unit import nano, m, s, mili, N, Pa, L, K
 from src.common import roundtex
-from src.helper import decimal_point
 
 # Common
 assert(roundtex(0, 1) == r'0')
@@ -26,3 +23,11 @@ a = Value(1, L)
 assert(str(a.expect(m)) == r'<0.001 <m3>>')
 
 print('OK')
+
+
+minute = (60 * s)('min')
+print(Value(120, s).expect(minute))  # 2min
+
+# celcius = (273 + K)('℃')
+# Value(300, K).expect(celcius)  # 27celcius
+

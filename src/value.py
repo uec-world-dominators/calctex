@@ -93,7 +93,7 @@ class Value:
 
     def expect(self, *us):
         _unit = self.unit.expect(*us)
-        return Value(self.value * 10 ** _unit.get_scale(),
+        return Value(self.value * 10 ** _unit.get_scale() * _unit.k + _unit.b,
                      _unit.set_scale(Unit.sum_scale(us)), self.digits)
 
     def totex(self, digits=None, unit=True):
