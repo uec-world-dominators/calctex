@@ -1,10 +1,6 @@
-isinpackage = not __name__ in ['unit', '__main__']
-if isinpackage:
-    from .unit import *
-    from .common import roundtex
-else:
-    from unit import *
-    from common import roundtex
+import math
+from .unit import Unit
+from .common import roundtex
 
 
 class Value:
@@ -15,12 +11,13 @@ class Value:
     ```
     '''
 
-    def __init__(self, value, unit=Unit({})):
+    def __init__(self, value, unit=Unit({}), digits=math.inf):
         self.value = value
         self.unit = unit
+        self.digits = digits
 
     def clone(self):
-        return Value(self.value, self.unit.clone())
+        return Value(self.value, self.unit.clone(), self.digits)
 
     def normarize_scale(self):
         e = self.unit.get_scale()
@@ -37,12 +34,13 @@ class Value:
                 else:
                     _self = self
                     _e = e
-                return Value(_self.value + _e.value, _self.unit)
+                digits = min(_self.digits, _e.digits)
+                return Value(_self.value + _e.value, _self.unit, digits)
             else:
                 raise 'illegal addition (different dimention)'
         else:
             if self.unit.is_zero_dim():
-                return Value(self.value + e, self.unit.clone())
+                return Value(self.value + e, self.unit.clone(), self.digits)
             else:
                 raise 'illegal addition (ambigant dimention)'
 
@@ -50,9 +48,10 @@ class Value:
         _self = self.clone().normarize_scale()
         if isinstance(e, Value):
             _e = e.clone().normarize_scale()
-            return Value(_self.value*_e.value, _self.unit*e.unit)
+            digits = min(_self.digits, _e.digits)
+            return Value(_self.value * _e.value, _self.unit * e.unit, digits)
         else:
-            return Value(_self.value*e, _self.unit)
+            return Value(_self.value * e, _self.unit, _self.digits)
 
     def __pow__(self, e):
         if isinstance(e, Value):
@@ -62,9 +61,8 @@ class Value:
                 raise "pow with not zero dimention value"
         else:
             _e = e
-
         _self = self.clone().normarize_scale()
-        return Value(_self.value**_e, _self.unit**_e)
+        return Value(_self.value**_e, _self.unit**_e, _self.digits)
 
     def __truediv__(self, e):
         return self * e**-1
@@ -73,7 +71,7 @@ class Value:
         return self + e
 
     def __rsub__(self, e):
-        return self*(-1) + e
+        return self * (-1) + e
 
     def __rmul__(self, e):
         return self * e
@@ -88,34 +86,90 @@ class Value:
             raise "pow with not zero dimention value (self has dimention)"
 
     def __sub__(self, e):
-        return self + (-1)*e
+        return self + (-1) * e
 
     def __repr__(self):
         return f"<{self.value} {self.unit}>"
 
     def expect(self, *us):
         _unit = self.unit.expect(*us)
-        return Value(self.value*10**_unit.get_scale(),
-                     _unit.set_scale(Unit.sum_scale(us)))
+        return Value(self.value * 10 ** _unit.get_scale(),
+                     _unit.set_scale(Unit.sum_scale(us)), self.digits)
 
-    def totex(self, digits, unit=True):
-        return f"{roundtex(self.value,digits)}{self.unit.totex() if unit else ''}"
+    def totex(self, digits=None, unit=True):
+        return f"{roundtex(self.value,self.digits if digits==None else digits)}{self.unit.totex() if unit else ''}"
 
+    def fn(self, fn, zero_dim=True):
+        if self.unit.is_zero_dim():
+            return Value(fn(self.value), self.unit.clone(), self.digits)
+        else:
+            raise "not zero dimention"
 
-isinpackage = not __name__ in ['value', '__main__']
-if not isinpackage:
-    # # 新しい単位
-    # nN = (nano*N)('nN')
+    def sin(self):
+        return self.fn(math.sin)
 
-    # p = Value(3.0, nano*Pa)
-    # s = Value(1.0, m**2)
-    # f = p*s*10
+    def cos(self):
+        return self.fn(math.cos)
 
-    # print(f)
-    # # <3.0000000000000004e-09 <kgms-2>>
-    # print(f.expect(nN))
-    # # <3.0000000000000004 <nN>>
+    def tan(self):
+        return self.fn(math.tan)
 
-    a = Value(1, nano * s)
-    print(a.totex(4))
-    print(a.expect(s).totex(2))
+    def sinh(self):
+        return self.fn(math.sinh)
+
+    def cosh(self):
+        return self.fn(math.cosh)
+
+    def tanh(self):
+        return self.fn(math.tanh)
+
+    def arcsin(self):
+        return self.fn(math.asin)
+
+    def arccos(self):
+        return self.fn(math.acos)
+
+    def arctan(self):
+        return self.fn(math.atan)
+
+    def arctan2(self):
+        return self.fn(math.atan2)
+
+    def arcsinh(self):
+        return self.fn(math.asinh)
+
+    def arccosh(self):
+        return self.fn(math.acosh)
+
+    def arctanh(self):
+        return self.fn(math.atanh)
+
+    def exp(self):
+        return self.fn(math.exp)
+
+    def log(self):
+        return self.fn(math.log)
+
+    def log10(self):
+        return self.fn(math.log10)
+
+    def log2(self):
+        return self.fn(math.log2)
+
+    def log1p(self):
+        return self.fn(math.log1p)
+
+    def floor(self):
+        return self.fn(math.floor)
+
+    def trunc(self):
+        return self.fn(math.trunc)
+
+    def ceil(self):
+        return self.fn(math.ceil)
+
+    def __abs__(self):
+        return self.fn(abs)
+
+    def rint(self):
+        return self.fn(round)

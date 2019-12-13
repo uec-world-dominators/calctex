@@ -1,10 +1,8 @@
-#%%
 from src.common import roundtex
 from src.value import Value
 from numpy import ndarray
 import numpy as np
 
-#%%
 lambda_ = Calc([Value(300, m), Value(400, m)])
 # [300, 400]*m
 # 300 * m
@@ -13,14 +11,6 @@ v = f * lambda_  # Calc
 print(v.tex(['v_1', 'v_2'])[0])  # 'v_1 = ...'
 print(v.value())
 
-
-#%%
-type(np.array(4))
-
-
-
-
-#%%
 class Calc:
     def __init__(self, x, parentheses=False, tex=""):
         import numpy as np

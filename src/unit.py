@@ -1,6 +1,4 @@
 import functools
-import math
-isinpackage = not __name__ in ['unit', '__main__']
 
 
 class Unit:
@@ -50,9 +48,10 @@ class Unit:
             u.e += e.e
             for key, value in e.table.items():
                 u.table[key] = u.table.get(key, 0) + e.table[key]
+            return u
         else:
-            u.e += math.log10(e)
-        return u
+            from .value import Value
+            return Value(e, self)
 
     def __pow__(self, e):
         u = self.clone()
@@ -67,6 +66,9 @@ class Unit:
 
     def __truediv__(self, e):
         return self.clone() * e**-1
+
+    def __rtruediv__(self, e):
+        return self.clone()**-1 * e
 
     def __repr__(self):
         if self.symbol:
@@ -92,7 +94,7 @@ class Unit:
             return False
 
         for k, v in self.table.items():
-            if not k in u.table or u.table[k] != v:
+            if k not in u.table or u.table[k] != v:
                 return False
 
         return True
@@ -108,7 +110,7 @@ class Unit:
             return False
 
         for k, v in self.table.items():
-            if not k in u.table or u.table[k] != v:
+            if k not in u.table or u.table[k] != v:
                 return False
 
         return True
@@ -124,7 +126,7 @@ class Unit:
             3: 'k',
             0: '',
             -3: 'm',
-            -6: 'μ',
+            -6: '\\mu' if tex else 'μ',
             -9: 'n',
             -12: 'p',
         }
@@ -170,7 +172,7 @@ class Unit:
         _self = self.clone()
         _self.priorities = []
         for u in us:
-            _self = _self/u
+            _self = _self / u
             if not u.is_zero_dim():
                 if not u.symbol:
                     raise f'ERROR: symbol not defined for {_self}'
@@ -183,38 +185,38 @@ class Unit:
 
     @staticmethod
     def sum_scale(us):
-        return functools.reduce(lambda i, u: i+u.e, us, 0)
+        return functools.reduce(lambda i, u: i + u.e, us, 0)
 
 
 # Scale
 zerodim = Unit({})
-kilo = (1e3 * zerodim)('k')
-hecto = (1e2 * zerodim)('h')
-centi = (1e1 * zerodim)('c')
-mili = (1e-3 * zerodim)('mili')
-micro = (1e-6 * zerodim)('μ')
-nano = (1e-9 * zerodim)('n')
+kilo = zerodim.clone().set_scale(3)('k')
+hecto = zerodim.clone().set_scale(2)('h')
+centi = zerodim.clone().set_scale(-2)('c')
+mili = zerodim.clone().set_scale(-3)('m')
+micro = zerodim.clone().set_scale(-6)('μ')
+nano = zerodim.clone().set_scale(-9)('n')
 
-# MKSA Basic Units
+# SI Basic Units
 m = Unit('m')
 kg = Unit('kg')
 s = Unit('s')
 A = Unit('A')
+K = Unit('K')
+mol = Unit('mol')
+cd = Unit('cd')
 
 # Units
 N = (kg * m * s**-2)('N')
 Pa = (N * m**-2)('Pa')
-C = (A*s)('C')
-J = (N*m)('J')
-V = (J/C)('V')
-F = (C/V)('F')
-W = (V*A)('W')
-Wb = (V*s)('Wb')
-T = (Wb/m**-2)('T')
-H = (Wb/A)('H')
-Omega = (V/A)('Ω')
-
-# if not isinpackage:
-#     print(((nano*m*s)/(mili*m)))
-#     print(nano*N*Pa*m)
-#     print((nano*N*Pa*m**-1).expect((mili*Pa)('mPa'), N).to_expr(tex=True))
+C = (A * s)('C')
+J = (N * m)('J')
+V = (J / C)('V')
+F = (C / V)('F')
+W = (V * A)('W')
+Wb = (V * s)('Wb')
+T = (Wb / m ** -2)('T')
+H = (Wb / A)('H')
+Omega = (V / A)('Ω')
+Hz = (s ** -1)('Hz')
+L = (kilo * (centi * m)**3)('L')
