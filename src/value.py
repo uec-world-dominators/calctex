@@ -22,7 +22,6 @@ class Value:
 
     def clone(self):
         value = Value(self.value, self.unit.clone(), self.digits)
-        # value.trans_normarized = self.trans_normarized
         return value
 
     def info(self):
@@ -40,15 +39,8 @@ class Value:
         self.value *= 10 ** e
         return self
 
-    # def normarize_trans(self):
-    #     if not self.trans_normarized:
-    #         self.value = self.unit.inv_trans_value(self.value)
-    #         self.trans_normarized = True
-    #     return self
-
     def normarize(self):
         self.normarize_scale()
-        # self.normarize_trans()
         return self
 
     def __add__(self, e):
