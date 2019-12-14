@@ -50,7 +50,7 @@ class Unit:
                 u.table[key] = u.table.get(key, 0) + e.table[key]
             return u
         else:
-            from .value import Value
+            from src.value import Value
             return Value(e, self)
 
     def __pow__(self, e):

@@ -1,6 +1,6 @@
 import math
-from .unit import Unit
-from .common import roundtex
+from src.unit import Unit
+from src.common import roundtex
 
 
 class Value:
@@ -11,7 +11,7 @@ class Value:
     ```
     '''
 
-    def __init__(self, value, unit=Unit({}), digits=math.inf):
+    def __init__(self, value, unit=Unit({}), digits=6):
         self.value = value
         self.unit = unit
         self.digits = digits
