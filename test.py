@@ -32,3 +32,15 @@ assert(str(Value(60, unit.arc_minute).expect(unit.arc_degree) == r'<1.0 <°>>'))
 assert(str(Value(1.0, unit.L).expect(unit.m)) == r'<0.001 <m3>>')
 
 print('OK')
+
+#%%
+import math
+import numpy as np
+from src import Value
+from src.unit import nano, m, s, mili, N, Pa, L
+from src.common import roundtex
+from src.helper import decimal_point
+from src.calc import Calc
+
+
+#%%

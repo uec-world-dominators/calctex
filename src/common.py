@@ -3,7 +3,7 @@ import math
 # よくわからないけど動く（さわるな危険）
 
 
-def roundtex(n, d, exp=False):
+def roundtex(n, d=1, exp=False):
     assert(d > 0)
     if n == 0:
         return f"0{('.'+'0'*(d-1)) if d!=1 else ''}"

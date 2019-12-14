@@ -1,6 +1,6 @@
 import numpy as np
 import math
-from .value import Value
+from src.value import Value
 
 
 def point_digit_to_significant_figure(n, point_digit=0):
