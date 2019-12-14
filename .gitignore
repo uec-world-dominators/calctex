@@ -1,3 +1,9 @@
 __pycache__/
 *.pyc
 /.vscode/
+*.log
+*.aux
+*.dvi
+*.log
+*.pdf
+*.gz
