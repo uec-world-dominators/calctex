@@ -282,16 +282,6 @@ cd = Unit('cd')
 
 rad = Unit('rad')
 
-# SI併用単位
-celcius = (K - 273)('℃')
-fahrenheit = (9 / 5.0 * K - 459.67)('°F')
-minute = (s / 60.0)('min')
-h = (minute / 60.0)('hour')
-d = (h / 24.0)('d')
-arc_degree = ((180 / math.pi) * rad)('°')
-arc_minute = (arc_degree * 60.0)('′')
-arc_second = (arc_minute * 60.0)('″')
-
 # Units
 N = (kg * m * s**-2)('N')
 Pa = (N * m**-2)('Pa')
@@ -306,4 +296,14 @@ H = (Wb / A)('H')
 Omega = (V / A)('Ω')
 Hz = (s ** -1)('Hz')
 L = (kilo * (centi * m)**3)('L')
+
+# SI併用単位
+celcius = (K - 273)('℃')
+fahrenheit = (9 / 5.0 * K - 459.67)('°F')
+minute = (s / 60.0)('min')
+h = (minute / 60.0)('hour')
+d = (h / 24.0)('d')
+arc_degree = ((180 / math.pi) * rad)('°')
+arc_minute = (arc_degree * 60.0)('′')
+arc_second = (arc_minute * 60.0)('″')
 eV = (1.602176634e-19 * J)('eV')
