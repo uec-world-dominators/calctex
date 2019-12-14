@@ -11,31 +11,57 @@ class Value:
     ```
     '''
 
-    def __init__(self, value, unit=Unit({}), digits=6):
-        self.value = value
-        self.unit = unit
+    def __init__(self, value, unit=Unit({}), digits=math.inf, trans_normarized=False):
+        self.unit = unit.clone()
         self.digits = digits
+        self.value = value if trans_normarized else self.unit.inv_trans_value(value)
+        if len(self.unit.rules):
+            self.unit.rules = []
+            self.unit.rules_history = ''
+            self.unit.symbol = None
 
     def clone(self):
-        return Value(self.value, self.unit.clone(), self.digits)
+        value = Value(self.value, self.unit.clone(), self.digits)
+        # value.trans_normarized = self.trans_normarized
+        return value
+
+    def info(self):
+        return f"""
+        value           : {self.value}
+        digits          : {self.digits}
+
+        unit            : {self.unit.info()}
+        """
 
     def normarize_scale(self):
+        self.unit.symbol = None
         e = self.unit.get_scale()
         self.unit.scale_zero()
         self.value *= 10 ** e
+        return self
+
+    # def normarize_trans(self):
+    #     if not self.trans_normarized:
+    #         self.value = self.unit.inv_trans_value(self.value)
+    #         self.trans_normarized = True
+    #     return self
+
+    def normarize(self):
+        self.normarize_scale()
+        # self.normarize_trans()
         return self
 
     def __add__(self, e):
         if isinstance(e, Value):
             if self.unit.is_same_dim(e.unit):
                 if self.unit != e.unit:
-                    _self = self.clone().normarize_scale()
-                    _e = e.clone().normarize_scale()
+                    _self = self.clone().normarize()
+                    _e = e.clone().normarize()
                 else:
                     _self = self
                     _e = e
                 digits = min(_self.digits, _e.digits)
-                return Value(_self.value + _e.value, _self.unit, digits)
+                return Value(_self.value + _e.value, _self.unit.clone(), digits, True)
             else:
                 raise 'illegal addition (different dimention)'
         else:
@@ -45,13 +71,13 @@ class Value:
                 raise 'illegal addition (ambigant dimention)'
 
     def __mul__(self, e):
-        _self = self.clone().normarize_scale()
+        _self = self.clone().normarize()
         if isinstance(e, Value):
-            _e = e.clone().normarize_scale()
+            _e = e.clone().normarize()
             digits = min(_self.digits, _e.digits)
-            return Value(_self.value * _e.value, _self.unit * e.unit, digits)
+            return Value(_self.value * _e.value, _self.unit * e.unit, digits, True)
         else:
-            return Value(_self.value * e, _self.unit, _self.digits)
+            return Value(_self.value * e, _self.unit.clone(), _self.digits, True)
 
     def __pow__(self, e):
         if isinstance(e, Value):
@@ -61,8 +87,8 @@ class Value:
                 raise "pow with not zero dimention value"
         else:
             _e = e
-        _self = self.clone().normarize_scale()
-        return Value(_self.value**_e, _self.unit**_e, _self.digits)
+        _self = self.clone().normarize()
+        return Value(_self.value**_e, _self.unit**_e, _self.digits, True)
 
     def __truediv__(self, e):
         return self * e**-1
@@ -92,12 +118,19 @@ class Value:
         return f"<{self.value} {self.unit}>"
 
     def expect(self, *us):
-        _unit = self.unit.expect(*us)
-        return Value(self.value * 10 ** _unit.get_scale(),
-                     _unit.set_scale(Unit.sum_scale(us)), self.digits)
+        _self = self.clone()
+        _self.normarize()
+        _unit = _self.unit.expect(*us)
+        _self.unit = _unit.set_scale(Unit.sum_scale(us))
+        _self.value = _unit.trans_value(_self.value)
+        _self.value = _self.value * 10 ** _unit.get_scale()
+        return _self
 
-    def totex(self, digits=None, unit=True):
-        return f"{roundtex(self.value,self.digits if digits==None else digits)}{self.unit.totex() if unit else ''}"
+    def tex(self, digits=None, unit=True):
+        if not digits and self.digits == math.inf:
+            return f"{self.value}\\,{self.unit.tex() if unit else ''}"
+        else:
+            return f"{roundtex(self.value,self.digits if digits==None else digits)}\\,{self.unit.tex() if unit else ''}"
 
     def fn(self, fn, zero_dim=True):
         if self.unit.is_zero_dim():
