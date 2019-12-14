@@ -56,12 +56,9 @@ class Unit:
         rules: {self.rules_history}
         """
 
-    def __rmatmul__(self, e):
+    def __ror__(self, e):
         from .value import Value
         return Value(e, self)
-
-    def __rfloordiv__(self, e):
-        return e @ self
 
     def __add__(self, e):
         u = self.clone()
@@ -309,3 +306,4 @@ H = (Wb / A)('H')
 Omega = (V / A)('Ω')
 Hz = (s ** -1)('Hz')
 L = (kilo * (centi * m)**3)('L')
+eV = (1.602176634e-19 * J)('eV')
