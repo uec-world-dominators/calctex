@@ -1,6 +1,6 @@
 __pycache__/
 *.pyc
-/.vscode/
+/.vscode/settings.json
 *.log
 *.aux
 *.dvi
