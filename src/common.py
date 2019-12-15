@@ -5,14 +5,14 @@ def toexp(e):
     '''
     累乗
     '''
-    return f'\\times 10^{{{e}}}' if e else ''
+    return f'\\times 10^{{{e}}}' * bool(e)
 
 
 def round_at(value, significant):
     '''
     指定桁数で丸める
     '''
-    return str(round(value, (significant - 1) or None))
+    return str(round(value, significant - 1 or None))
 
 
 def zero_padding(significant, main):
@@ -34,6 +34,6 @@ def roundtex(value, significant=1):
     有効数字を考慮したTeX形式に変換
     '''
     assert(significant > 0)
-    digits = math.floor(math.log10(value) + (value < 0)) if value else 0
+    digits = value and math.floor(math.log10(value) + (value < 0))
     main = round_at(value * 10 ** -digits, significant)
     return main + dot(significant, main) + zero_padding(significant, main) + toexp(digits)
