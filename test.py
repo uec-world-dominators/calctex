@@ -32,6 +32,11 @@ assert(str(Value(0, unit.fahrenheit).expect(unit.K)) == r'<255.37222222222223 <K
 assert(str(Value(60, unit.arc_minute).expect(unit.arc_degree) == r'<1.0 <°>>'))
 assert(str(Value(1.0, unit.L).expect(unit.m)) == r'<0.001 <m3>>')
 
+# スケールの入った単位でexpect
+assert(str(Value(1.0, unit.m).expect((unit.mili*unit.m)('mm'))) == r'<1000.0 <mm>>')
+assert(str(Value(1.0, unit.L).expect(unit.L)) == r'<1.0 <L>>')
+
+
 print('OK')
 
 #%%

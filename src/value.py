@@ -113,9 +113,9 @@ class Value:
         _self = self.clone()
         _self.normarize()
         _unit = _self.unit.expect(*us)
-        _self.unit = _unit.set_scale(Unit.sum_scale(us))
-        _self.value = _unit.trans_value(_self.value)
-        _self.value = _self.value * 10 ** _unit.get_scale()
+        e = _unit.get_scale()
+        _self.unit = _unit.set_scale(Unit.sum_scale(us) + e)
+        _self.value = _unit.trans_value(_self.value) * 10 ** e
         return _self
 
     def tex(self, digits=None, unit=True):
