@@ -1,22 +1,39 @@
 import math
 
-# よくわからないけど動く（さわるな危険）
+
+def toexp(e):
+    '''
+    累乗
+    '''
+    return f'\\times 10^{{{e}}}' if e else ''
 
 
-def roundtex(n, d=1, exp=False):
-    assert(d > 0)
-    if n == 0:
-        return f"0{('.'+'0'*(d-1)) if d!=1 else ''}"
-    if n >= 1:
-        _d = math.floor(math.log10(n))
-        s = str(round(n / 10 ** _d, d - 1))
-        return f'{s}{"0"*(1+d-len(s))}' + (f'\\times 10^{{{_d}}}' if _d != 0 else '')
-    else:
-        _n = n
-        _d = 0
-        while True:
-            _n *= 10
-            _d -= 1
-            if math.floor(_n) % 10 != 0:
-                s = str(round(_n, d - 1) if d != 1 else round(_n))
-                return f'{s}{"0"*(1 + d - len(s)) if d!=1 else ""}' + (f'\\times 10^{{{_d}}}' if _d != 0 else '')
+def round_at(value, significant):
+    '''
+    指定桁数で丸める
+    '''
+    return str(round(value, (significant - 1) or None))
+
+
+def zero_padding(significant, main):
+    '''
+    有効数字までゼロ埋め
+    '''
+    return "0" * (significant - len(main))
+
+
+def dot(significant, main):
+    '''
+    「.」の付加
+    '''
+    return "." * (significant != 1 and len(main) == 1)
+
+
+def roundtex(value, significant=1):
+    '''
+    有効数字を考慮したTeX形式に変換
+    '''
+    assert(significant > 0)
+    digits = math.floor(math.log10(value) + (value < 0)) if value else 0
+    main = round_at(value * 10 ** -digits, significant)
+    return main + dot(significant, main) + zero_padding(significant, main) + toexp(digits)
