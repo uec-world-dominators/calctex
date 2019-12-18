@@ -9,7 +9,7 @@ class Calc:
     def __init__(self, x, parentheses=False, tex=""):
         import numpy as np
         from numpy import ndarray
-        if isinstance(x, Value):
+        if isinstance(x, (Value, ndarray)):
             x = x
         elif isinstance(x, (int, float)):
             x = Value(x)
@@ -22,24 +22,21 @@ class Calc:
             self.tex = tex
         else:
             if isinstance(x, Value):
-                self.tex = self.value.totex()
+                self.tex = self.value.tex()
             elif isinstance(x, ndarray):
                 self.tex = str(self.value)
+                # self.tex = np.array(self.tex())
             try:
                 self.tex = str(self.value[0])
             except:
                 self.tex = str(self.value)
-            # try:
-            #     self.tex = self.totex(self.value)
-            # except:
-            #     self.tex = ""
         self.parentheses = parentheses
 
-    def totex(self):
+    def tex(self):
         if isinstance(self.value, Value):
-            return self.value.totex()
+            return self.value.tex()
         elif isinstance(self.value, ndarray):
-            return [i.totex() for i in self.value]
+            return [i.tex() for i in self.value]
 
     def __add__(self, other):
         if isinstance(other, Calc):
