@@ -24,7 +24,7 @@ assert(a.tex(4) == r'1.000\,\mathrm{ns}')
 assert(a.expect(unit.s).tex(2) == r'1.0\times 10^{-9}\,\mathrm{s}')
 assert(str(Value(1, unit.L).expect(unit.m)) == r'<0.001 <m3>>')
 
-# SI併用単位
+# SI併用坘佝
 assert(str(Value(1, unit.minute) - Value(50, unit.s)) == r'<10.0 <s>>')
 assert(str((Value(3600, unit.s) + Value(0.5, unit.h)).expect(unit.minute)) == r'<90.0 <min>>')
 assert(str((Value(300, unit.K) - Value(27, unit.celcius)).expect(unit.celcius)) == r'<-273 <℃>>')
@@ -32,7 +32,7 @@ assert(str(Value(0, unit.fahrenheit).expect(unit.K)) == r'<255.37222222222223 <K
 assert(str(Value(60, unit.arc_minute).expect(unit.arc_degree) == r'<1.0 <°>>'))
 assert(str(Value(1.0, unit.L).expect(unit.m)) == r'<0.001 <m3>>')
 
-# スケールの入った単位でexpect
+# スケール㝮入㝣㝟坘佝㝧expect
 assert(str(Value(1.0, unit.m).expect((unit.mili * unit.m)('mm'))) == r'<1000.0 <mm>>')
 assert(str(Value(1.0, unit.L).expect(unit.L)) == r'<1.0 <L>>')
 
@@ -48,5 +48,7 @@ from src.common import roundtex
 from src.helper import decimal_point
 from src.calc import Calc
 
-
-#%%
+a = Value(3, m)
+b = Value(4, m)
+c = Value(2, s)
+print(((Calc(a) + Calc(b))*Calc(c)).latex())

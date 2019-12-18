@@ -24,12 +24,7 @@ class Calc:
             if isinstance(x, Value):
                 self.tex = self.value.tex()
             elif isinstance(x, ndarray):
-                self.tex = str(self.value)
-                # self.tex = np.array(self.tex())
-            try:
-                self.tex = str(self.value[0])
-            except:
-                self.tex = str(self.value)
+                self.tex = np.array(self.tex())
         self.parentheses = parentheses
 
     def tex(self):
@@ -63,7 +58,7 @@ class Calc:
                 if other.parentheses:
                     tex = r"\left( " + self.tex + r" \right) \times \left( " + other.tex + r" \right)"
                 else:
-                    tex = r"\left( " + self.tex + " \right) \times " + other.tex
+                    tex = r"\left( " + self.tex + r" \right) \times " + other.tex
             else:
                 if other.parentheses:
                     tex = self.tex + r" \times \left( " + other.tex + r" \right)"
@@ -193,7 +188,8 @@ class Calc:
         latex = r"""\begin{align*}
    %s &= %s \\
     &= %s
-\end{align*}""" % (variable, self.tex, result)
+\end{align*}""" % (variable, self.tex, result.tex())
         return latex
+
     def clear(self):
         self.tex = ""
