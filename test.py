@@ -15,7 +15,7 @@ assert(roundtex(0.99366103, 4) == r'9.937\times 10^{-1}')
 assert(str((unit.nano * unit.m * unit.s) / (unit.mili * unit.m)) == r'<μs>')
 assert(str(unit.nano * unit.N * unit.Pa * unit.m) == r'<nkg2ms-4>')
 assert(str((unit.nano * unit.N * unit.Pa * unit.m ** -1)
-           .expect((unit.mili * unit.Pa)('mPa'), unit.N).to_expr(tex=True)) == r'\mathrm{\mumPa\cdotN\cdotm^{-1}}')
+           .expect((unit.mili * unit.Pa)('mPa'), unit.N).to_expr(tex=True)) == r'\mathrm{\mumPa \cdot N \cdot m^{-1}}')
 
 # Value
 assert(str(Value(1, unit.mili * unit.s).expect(unit.s)) == r'<0.001 <s>>')
