@@ -212,7 +212,7 @@ class Unit:
                     units.append(k + (f"^{{{str(dim)}}}" if (dim != 1) else ""))
                 else:
                     units.append(k + (str(dim) if (dim != 1) else ""))
-        result = prefix[_self.e] + ('\\cdot' if tex else '').join(units)
+        result = prefix[_self.e] + (' \\cdot ' if tex else '').join(units)
         return f"\\mathrm{{{result}}}" if tex else result
 
     def get_scale(self):
