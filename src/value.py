@@ -120,9 +120,11 @@ class Value:
 
     def tex(self, digits=None, unit=True):
         if not digits and self.digits == math.inf:
-            return str(self.value) + ('\\,' + self.unit.tex() if unit else '')
+            main = str(self.value)
         else:
-            return roundtex(self.value, self.digits if digits == None else digits) + ('\\,' + self.unit.tex() if unit else '')
+            print(self.value,self.digits,digits)
+            main = roundtex(self.value, self.digits if digits == None else digits)
+        return main + ('\\,' + self.unit.tex() if unit and not self.unit.is_zero_dim() else '')
 
     def fn(self, fn, zero_dim=True):
         if self.unit.is_zero_dim():
