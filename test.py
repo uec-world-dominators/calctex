@@ -13,6 +13,7 @@ assert(roundtex(10,2) == r'1.0\times 10')
 assert(roundtex(0, 1) == r'0')
 assert(roundtex(0, 4) == r'0.000')
 assert(roundtex(1, 4) == r'1.000')
+assert(roundtex(0.1, 4) == r'1.000\times 10^{-1}')
 assert(roundtex(203, 2) == r'2.0\times 10^{2}')
 assert(roundtex(0.99366103, 4) == r'9.937\times 10^{-1}')
 

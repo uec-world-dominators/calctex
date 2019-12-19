@@ -120,12 +120,17 @@ class Value:
 
     def tex(self, digits=None, unit=True):
         if not digits and self.digits == math.inf:
-            return str(self.value) + ('\\,' + self.unit.tex() if unit else '')
+            main = str(self.value)
         else:
-            return roundtex(self.value, self.digits if digits == None else digits) + ('\\,' + self.unit.tex() if unit else '')
+            main = roundtex(self.value, self.digits if digits == None else digits)
+        return main + ('\\,' + self.unit.tex() if unit and not self.unit.is_zero_dim() else '')
 
-    def fn(self, fn, zero_dim=True):
-        if self.unit.is_zero_dim():
+    def fn(self, fn, multi_dim=False):
+        '''
+        numpy用の関数適用
+        multi_dim : 非零次元を許可するか
+        '''
+        if not multi_dim and self.unit.is_zero_dim():
             return Value(fn(self.value), self.unit.clone(), self.digits)
         else:
             raise "not zero dimention"
@@ -185,16 +190,16 @@ class Value:
         return self.fn(math.log1p)
 
     def floor(self):
-        return self.fn(math.floor)
+        return self.fn(math.floor, multi_dim=True)
 
     def trunc(self):
-        return self.fn(math.trunc)
+        return self.fn(math.trunc, multi_dim=True)
 
     def ceil(self):
-        return self.fn(math.ceil)
+        return self.fn(math.ceil, multi_dim=True)
 
     def __abs__(self):
-        return self.fn(abs)
+        return self.fn(abs, multi_dim=True)
 
     def rint(self):
-        return self.fn(round)
+        return self.fn(round, multi_dim=True)
