@@ -9,6 +9,7 @@ from src.common import roundtex
 
 
 # Common
+assert(roundtex(10,2) == r'1.0\times 10')
 assert(roundtex(0, 1) == r'0')
 assert(roundtex(0, 4) == r'0.000')
 assert(roundtex(1, 4) == r'1.000')
