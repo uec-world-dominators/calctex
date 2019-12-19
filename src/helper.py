@@ -18,4 +18,4 @@ def decimal_point(data, point_digit, unit):
 
 
 def multi(data, significant, unit=None):
-    return np.array(list(map(lambda e: Value(e, unit.clone(), significant), data)))
+    return np.array(list(map(lambda e: Value(e, unit and unit.clone(), significant), data)))
