@@ -9,15 +9,16 @@ from src.common import roundtex
 
 
 # Common
-assert(roundtex(10,2) == r'1.0\times 10')
+assert(roundtex(10,2) == r'1.0 \times 10')
 assert(roundtex(0, 1) == r'0')
 assert(roundtex(0, 4) == r'0.000')
 assert(roundtex(1, 4) == r'1.000')
-assert(roundtex(0.1, 4) == r'1.000\times 10^{-1}')
-assert(roundtex(203, 2) == r'2.0\times 10^{2}')
-assert(roundtex(0.99366103, 4) == r'9.937\times 10^{-1}')
+assert(roundtex(0.1, 4) == r'1.000 \times 10^{-1}')
+assert(roundtex(203, 2) == r'2.0 \times 10^{2}')
+assert(roundtex(0.99366103, 4) == r'9.937 \times 10^{-1}')
 
 # Unit
+assert(str(unit.fahrenheit) == r'<°F>')
 assert(str((unit.nano * unit.m * unit.s) / (unit.mili * unit.m)) == r'<μs>')
 assert(str(unit.nano * unit.N * unit.Pa * unit.m) == r'<nkg2ms-4>')
 assert(str((unit.nano * unit.N * unit.Pa * unit.m ** -1)
@@ -27,7 +28,7 @@ assert(str((unit.nano * unit.N * unit.Pa * unit.m ** -1)
 assert(str(Value(1, unit.mili * unit.s).expect(unit.s)) == r'<0.001 <s>>')
 a = Value(1, unit.nano * unit.s)
 assert(a.tex(4) == r'1.000\,\mathrm{ns}')
-assert(a.expect(unit.s).tex(2) == r'1.0\times 10^{-9}\,\mathrm{s}')
+assert(a.expect(unit.s).tex(2) == r'1.0 \times 10^{-9}\,\mathrm{s}')
 assert(str(Value(1, unit.L).expect(unit.m)) == r'<0.001 <m3>>')
 
 # SI併用坘佝
@@ -44,7 +45,6 @@ assert(str(Value(1.0, unit.L).expect(unit.L)) == r'<1.0 <L>>')
 
 # Tex
 assert(unit.m.tex() == r'\mathrm{m}')
-print(unit.fahrenheit.tex())
 assert(Value(1,unit.m).tex(unit=False) == r'1')
 assert(Value(1,unit.m).tex() == r'1\,\mathrm{m}')
 assert(Value(1,unit.m).tex(digits=3) == r'1.00\,\mathrm{m}')

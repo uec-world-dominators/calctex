@@ -15,3 +15,7 @@ def decimal_point(data, point_digit, unit):
     '''
     return np.array(list(map(lambda n:
                              Value(n, unit.clone(), point_digit_to_significant_figure(n, point_digit)), data)))
+
+
+def multi(data, significant, unit=None):
+    return np.array(list(map(lambda e: Value(e, unit.clone(), significant), data)))
