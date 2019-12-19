@@ -12,7 +12,7 @@ class Value:
     '''
 
     def __init__(self, value, unit=Unit({}), digits=math.inf, trans_normarized=False):
-        self.unit = unit.clone()
+        self.unit = (unit or Unit({})).clone()
         self.digits = digits
         self.value = value if trans_normarized else self.unit.inv_trans_value(value)
         if len(self.unit.rules):
