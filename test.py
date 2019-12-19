@@ -48,7 +48,7 @@ from src.common import roundtex
 from src.helper import decimal_point
 from src.calc import Calc
 
-a = Value(3, m)
+a = Value(4, m)
 b = Value(4, m)
-c = Value(2, s)
-print(((Calc(a) + Calc(b))*Calc(c)).latex())
+c = Value(2, m/s)
+print(((Calc(a) + Calc(b))**2*Calc(c)).latex())
