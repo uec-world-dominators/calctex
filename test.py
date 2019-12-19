@@ -66,6 +66,7 @@ a = Value(4, m, 5)
 b = Value(40, m)
 print((Calc(a) + Calc(b)).tex())
 
+# a = Calc(multi([1,2,3],m,significant=3)) + Calc(Value(4,m,significant= 2))
+# print(a.tex())
 
-a = Calc(multi([1,2,3],m,significant=3)) + Calc(Value(4,m,significant= 2))
-print(Calc(a).tex())
+# print(Calc([Value(1, m), Value(2, m), Value(3, m)])+Calc(Value(1, m)))
