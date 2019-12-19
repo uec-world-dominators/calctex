@@ -57,7 +57,7 @@ class Unit:
         """
 
     def __ror__(self, e):
-        from .value import Value
+        from ..value import Value
         return Value(e, self)
 
     def __add__(self, e):
@@ -279,7 +279,6 @@ A = Unit('A')
 K = Unit('K')
 mol = Unit('mol')
 cd = Unit('cd')
-
 rad = Unit('rad')
 
 # Units
@@ -295,7 +294,6 @@ T = (Wb / m ** -2)('T')
 H = (Wb / A)('H')
 Omega = (V / A)('Ω')
 Hz = (s ** -1)('Hz')
-L = (kilo * (centi * m)**3)('L')
 
 # SI併用単位
 celcius = (K - 273)('℃')
@@ -307,3 +305,4 @@ arc_degree = ((180 / math.pi) * rad)('°')
 arc_minute = (arc_degree * 60.0)('′')
 arc_second = (arc_minute * 60.0)('″')
 eV = (1.602176634e-19 * J)('eV')
+L = (kilo * (centi * m)**3)('L')

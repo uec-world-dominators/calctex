@@ -1,3 +1,7 @@
+from src.unit.basic import *
+assert(('m' in locals()) == True)
+assert(('Pa' in locals()) == False)
+
 from src import Value
 from src import unit
 from src import constants
@@ -36,6 +40,12 @@ assert(str(Value(1.0, unit.L).expect(unit.m)) == r'<0.001 <m3>>')
 assert(str(Value(1.0, unit.m).expect((unit.mili * unit.m)('mm'))) == r'<1000.0 <mm>>')
 assert(str(Value(1.0, unit.L).expect(unit.L)) == r'<1.0 <L>>')
 
+# Tex
+assert(unit.m.tex() == r'\mathrm{m}')
+print(unit.fahrenheit.tex())
+assert(Value(1,unit.m).tex(unit=False) == r'1')
+assert(Value(1,unit.m).tex() == r'1\,\mathrm{m}')
+assert(Value(1,unit.m).tex(digits=3) == r'1.00\,\mathrm{m}')
 
 print('OK')
 
