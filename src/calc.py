@@ -24,10 +24,10 @@ class Calc:
             if isinstance(x, Value):
                 self.raw = self.value.tex()
             elif isinstance(x, ndarray):
-                self.raw = np.array(self.tex())
+                self.raw = np.array(self.raw())
         self.parentheses = parentheses
 
-    def tex(self):
+    def raw(self):
         if isinstance(self.value, Value):
             return self.value.tex()
         elif isinstance(self.value, ndarray):
