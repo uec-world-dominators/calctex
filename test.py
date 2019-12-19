@@ -9,13 +9,13 @@ from src.common import roundtex
 
 
 # Common
-assert(roundtex(10,2) == r'1.0\times 10')
+assert(roundtex(10,2) == r'1.0 \times 10')
 assert(roundtex(0, 1) == r'0')
 assert(roundtex(0, 4) == r'0.000')
 assert(roundtex(1, 4) == r'1.000')
-assert(roundtex(0.1, 4) == r'1.000\times 10^{-1}')
-assert(roundtex(203, 2) == r'2.0\times 10^{2}')
-assert(roundtex(0.99366103, 4) == r'9.937\times 10^{-1}')
+assert(roundtex(0.1, 4) == r'1.000 \times 10^{-1}')
+assert(roundtex(203, 2) == r'2.0 \times 10^{2}')
+assert(roundtex(0.99366103, 4) == r'9.937 \times 10^{-1}')
 
 # Unit
 assert(str((unit.nano * unit.m * unit.s) / (unit.mili * unit.m)) == r'<μs>')
@@ -27,7 +27,7 @@ assert(str((unit.nano * unit.N * unit.Pa * unit.m ** -1)
 assert(str(Value(1, unit.mili * unit.s).expect(unit.s)) == r'<0.001 <s>>')
 a = Value(1, unit.nano * unit.s)
 assert(a.tex(4) == r'1.000\,\mathrm{ns}')
-assert(a.expect(unit.s).tex(2) == r'1.0\times 10^{-9}\,\mathrm{s}')
+assert(a.expect(unit.s).tex(2) == r'1.0 \times 10^{-9}\,\mathrm{s}')
 assert(str(Value(1, unit.L).expect(unit.m)) == r'<0.001 <m3>>')
 
 # SI併用坘佝

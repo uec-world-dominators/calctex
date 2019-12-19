@@ -5,7 +5,7 @@ def toexp(e):
     '''
     累乗
     '''
-    return ('\\times 10' + f'^{{{e}}}' * (e != 1)) * bool(e)
+    return (' \\times 10' + f'^{{{e}}}' * (e != 1)) * bool(e)
 
 
 def round_at(value, significant):
