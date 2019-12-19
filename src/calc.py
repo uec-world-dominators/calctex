@@ -6,7 +6,7 @@ import numpy as np
 from src.unit import *
 
 class Calc:
-    def __init__(self, x, parentheses=False, tex=""):
+    def __init__(self, x, parentheses=False, raw=""):
         import numpy as np
         from numpy import ndarray
         if isinstance(x, (Value, ndarray)):
@@ -18,13 +18,13 @@ class Calc:
         else:
             raise ValueError("error!")
         self.value = x
-        if tex:
-            self.tex = tex
+        if raw:
+            self.raw = raw
         else:
             if isinstance(x, Value):
-                self.tex = self.value.tex()
+                self.raw = self.value.tex()
             elif isinstance(x, ndarray):
-                self.tex = np.array(self.tex())
+                self.raw = np.array(self.tex())
         self.parentheses = parentheses
 
     def tex(self):
@@ -36,160 +36,160 @@ class Calc:
     def __add__(self, other):
         if isinstance(other, Calc):
             value = self.value + other.value
-            tex = self.tex + " + " + other.tex
+            raw = self.raw + " + " + other.raw
         else:
             value = self.value + other
-            tex = self.tex + " + " + str(other)
-        return Calc(x=value, tex=tex, parentheses=True)
+            raw = self.raw + " + " + str(other)
+        return Calc(x=value, raw=raw, parentheses=True)
 
     def __sub__(self, other):
         if isinstance(other, Calc):
             value = self.value - other.value
-            tex = self.tex + " - " + other.tex
+            raw = self.raw + " - " + other.raw
         else:
             value = self.value - other
-            tex = self.tex + " - " + str(other)
-        return Calc(x=value, tex=tex, parentheses=True)
+            raw = self.raw + " - " + str(other)
+        return Calc(x=value, raw=raw, parentheses=True)
 
     def __mul__(self, other):
         if isinstance(other, Calc):
             value = self.value * other.value
             if self.parentheses:
                 if other.parentheses:
-                    tex = r"\left( " + self.tex + r" \right) \times \left( " + other.tex + r" \right)"
+                    raw = r"\left( " + self.raw + r" \right) \times \left( " + other.raw + r" \right)"
                 else:
-                    tex = r"\left( " + self.tex + r" \right) \times " + other.tex
+                    raw = r"\left( " + self.raw + r" \right) \times " + other.raw
             else:
                 if other.parentheses:
-                    tex = self.tex + r" \times \left( " + other.tex + r" \right)"
+                    raw = self.raw + r" \times \left( " + other.raw + r" \right)"
                 else:
-                    tex = self.tex + r" \times " + other.tex
+                    raw = self.raw + r" \times " + other.raw
         else:
             value = self.value * other
             if self.parentheses:
-                tex = r"\left( " + self.tex + r" \right) \times " + str(other)
+                raw = r"\left( " + self.raw + r" \right) \times " + str(other)
             else:
-                tex = self.tex + r" \times " + str(other)
-        return Calc(x=value, tex=tex, parentheses=False)
+                raw = self.raw + r" \times " + str(other)
+        return Calc(x=value, raw=raw, parentheses=False)
 
     def __truediv__(self, other):
         if isinstance(other, Calc):
             value = self.value / other.value
             if self.parentheses:
                 if other.parentheses:
-                    tex = r"\frac{\left( " + self.tex + r" \right)}{\left( " + other.tex + r" \right)}"
+                    raw = r"\frac{\left( " + self.raw + r" \right)}{\left( " + other.raw + r" \right)}"
                 else:
-                    tex = r"\frac{\left( " + self.tex + r" \right)}{" + other.tex + r"}"
+                    raw = r"\frac{\left( " + self.raw + r" \right)}{" + other.raw + r"}"
             else:
                 if other.parentheses:
-                    tex = r"\frac{" + self.tex + r"}{\left( " + other.tex + r" \right)}"
+                    raw = r"\frac{" + self.raw + r"}{\left( " + other.raw + r" \right)}"
                 else:
-                    tex = r"\frac{" + self.tex + r"}{" + other.tex + r"}"
+                    raw = r"\frac{" + self.raw + r"}{" + other.raw + r"}"
         else:
             value = self.value / other
             if self.parentheses:
-                tex = r"\frac{\left( " + self.tex + r" \right)}{" + str(other) + r"}"
+                raw = r"\frac{\left( " + self.raw + r" \right)}{" + str(other) + r"}"
             else:
-                tex = r"\frac{" + self.tex + r"}{" + str(other) + r"}"
-        return Calc(x=value, tex=tex, parentheses=False)
+                raw = r"\frac{" + self.raw + r"}{" + str(other) + r"}"
+        return Calc(x=value, raw=raw, parentheses=False)
 
     def __pow__(self, other):
         if isinstance(other, Calc):
             value = self.value**other.value
             if self.parentheses:
                 if other.parentheses:
-                    tex = r"{\left( " + self.tex + r"\right)}^{\left( " + other.tex + r"\right)}"
+                    raw = r"{\left( " + self.raw + r"\right)}^{\left( " + other.raw + r"\right)}"
                 else:
-                    tex = r"{\left( " + self.tex + r"\right)}^{ " + other.tex + r"}"
+                    raw = r"{\left( " + self.raw + r"\right)}^{ " + other.raw + r"}"
             else:
                 if other.parentheses:
-                    tex = r"{" + self.tex + r"}^{\left( " + other.tex + r"\right)}"
+                    raw = r"{" + self.raw + r"}^{\left( " + other.raw + r"\right)}"
                 else:
-                    tex = r"{" + self.tex + r"}^{ " + other.tex + r"}"
+                    raw = r"{" + self.raw + r"}^{" + other.raw + r"}"
         else:
             value = self.value**other
             if self.parentheses:
                 if other == 0.5:
-                    tex = r"\sqrt{" + self.tex + r"}"
+                    raw = r"\sqrt{" + self.raw + r"}"
                 else:
-                    tex = r"{\left( " + self.tex + r"\right)}^{ " + str(other) + r"}"
+                    raw = r"{\left( " + self.raw + r"\right)}^{ " + str(other) + r"}"
             else:
-                tex = r"{" + self.tex + r"}^{ " + str(other) + r"}"
-        return Calc(x=value, tex=tex, parentheses=False)
+                raw = r"{" + self.raw + r"}^{ " + str(other) + r"}"
+        return Calc(x=value, raw=raw, parentheses=False)
 
     def __radd__(self, other):
         if isinstance(other, Calc):
             value = other.value + self.value
-            tex = other.tex + " + " + self.tex
+            raw = other.raw + " + " + self.raw
         else:
             value = self.value + other
-            tex = str(other) + "%s + %s" + self.tex
-        return Calc(x=value, tex=tex, parentheses=True)
+            raw = str(other) + "%s + %s" + self.raw
+        return Calc(x=value, raw=raw, parentheses=True)
 
     def __rsub__(self, other):
         if isinstance(other, Calc):
             value = self.value - other.value
-            tex = other.tex + " - " + self.tex
+            raw = other.raw + " - " + self.raw
         else:
             value = other - self.value
-            tex = str(other) + "%s - %s" + self.tex
-        return Calc(x=value, tex=tex, parentheses=True)
+            raw = str(other) + "%s - %s" + self.raw
+        return Calc(x=value, raw=raw, parentheses=True)
 
     def __rmul__(self, other):
         if isinstance(other, Calc):
             value = self.value * other.value
             if self.parentheses:
                 if other.parentheses:
-                    tex = r"\left( " + other.tex + r" \right) \times \left( " + self.tex.tex + r" \right)"
+                    raw = r"\left( " + other.raw + r" \right) \times \left( " + self.raw + r" \right)"
                 else:
-                    tex = r"\left( " + other.tex + " \right) \times " + self.tex.tex
+                    raw = r"\left( " + other.raw + " \right) \times " + self.raw
             else:
                 if other.parentheses:
-                    tex = other.tex + r" \times \left( " + self.tex.tex + r" \right)"
+                    raw = other.raw + r" \times \left( " + self.raw + r" \right)"
                 else:
-                    tex = other.tex + r" \times " + self.tex.tex
+                    raw = other.raw + r" \times " + self.raw
         else:
             value = self.value * other
             if self.parentheses:
-                tex = r"\left( " + other + r" \right) \times " + self.tex
+                raw = r"\left( " + other + r" \right) \times " + self.raw
             else:
-                tex = other + r" \times " + self.tex
-        return Calc(x=value, tex=tex, parentheses=False)
+                raw = other + r" \times " + self.raw
+        return Calc(x=value, raw=raw, parentheses=False)
 
     def __rtruediv__(self, other):
         if isinstance(other, Calc):
             value = self.value / other.value
             if self.parentheses:
                 if other.parentheses:
-                    tex = r"\frac{\left( " + other.tex + r" \right)}{\left( " + self.tex.tex + r" \right)}"
+                    raw = r"\frac{\left( " + other.raw + r" \right)}{\left( " + self.raw + r" \right)}"
                 else:
-                    tex = r"\frac{\left( " + other.tex + r" \right)}{" + self.tex.tex + r"}"
+                    raw = r"\frac{\left( " + other.raw + r" \right)}{" + self.raw + r"}"
             else:
                 if other.parentheses:
-                    tex = r"\frac{" + other.tex + r"}{\left( " + self.tex.tex + r" \right)}"
+                    raw = r"\frac{" + other.raw + r"}{\left( " + self.raw + r" \right)}"
                 else:
-                    tex = r"\frac{" + other.tex + r"}{" + self.tex.tex + r"}"
+                    raw = r"\frac{" + other.raw + r"}{" + self.raw + r"}"
         else:
             value = self.value / other
             if self.parentheses:
-                tex = r"\frac{\left( " + str(other) + r" \right)}{" + self.tex + r"}"
+                raw = r"\frac{\left( " + str(other) + r" \right)}{" + self.raw + r"}"
             else:
-                tex = r"\frac{" + str(other) + r"}{" + self.tex + r"}"
-        return Calc(x=value, tex=tex, parentheses=False)
+                raw = r"\frac{" + str(other) + r"}{" + self.raw + r"}"
+        return Calc(x=value, raw=raw, parentheses=False)
 
     def __repr__(self):
-        return str(self.tex)
+        return str(self.raw)
 
-    def latex(self, variable=""):
+    def tex(self, variable=""):
         if isinstance(self.value, (Value, int, float)):
             result = self.value
         else:
             result = self.value[0]
-        latex = r"""\begin{align*}
+        tex = r"""\begin{align*}
    %s &= %s \\
     &= %s
-\end{align*}""" % (variable, self.tex, result.tex())
-        return latex
+\end{align*}""" % (variable, self.raw, result.tex())
+        return tex
 
     def clear(self):
-        self.tex = ""
+        self.raw = ""

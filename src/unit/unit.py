@@ -57,7 +57,7 @@ class Unit:
         """
 
     def __ror__(self, e):
-        from .value import Value
+        from ..value import Value
         return Value(e, self)
 
     def __add__(self, e):
@@ -186,33 +186,36 @@ class Unit:
         '''
         線形変換については考慮しない（Valueの責任）
         '''
-        prefix = {
-            12: 'T',
-            9: 'G',
-            6: 'M',
-            3: 'k',
-            0: '',
-            -3: 'm',
-            -6: '\\mu' if tex else 'μ',
-            -9: 'n',
-            -12: 'p',
-        }
-        symbols = []
+        if self.symbol:
+            result = self.symbol
+        else:
+            prefix = {
+                12: 'T',
+                9: 'G',
+                6: 'M',
+                3: 'k',
+                0: '',
+                -3: 'm',
+                -6: '\\mu' if tex else 'μ',
+                -9: 'n',
+                -12: 'p',
+            }
+            symbols = []
 
-        _self = self.clone()
-        for symbol in _self.priorities:
-            if symbol in _self.table:
-                symbols.append((symbol, _self.table[symbol]))
-                _self.table[symbol] = 0
+            _self = self.clone()
+            for symbol in _self.priorities:
+                if symbol in _self.table:
+                    symbols.append((symbol, _self.table[symbol]))
+                    _self.table[symbol] = 0
 
-        units = []
-        for k, dim in [*symbols, *_self.table.items()]:
-            if dim != 0:
-                if tex:
-                    units.append(k + (f"^{{{str(dim)}}}" if (dim != 1) else ""))
-                else:
-                    units.append(k + (str(dim) if (dim != 1) else ""))
-        result = prefix[_self.e] + (' \\cdot ' if tex else '').join(units)
+            units = []
+            for k, dim in [*symbols, *_self.table.items()]:
+                if dim != 0:
+                    if tex:
+                        units.append(k + (f"^{{{str(dim)}}}" if (dim != 1) else ""))
+                    else:
+                        units.append(k + (str(dim) if (dim != 1) else ""))
+            result = prefix[_self.e] + (' \\cdot ' if tex else '').join(units)
         return f"\\mathrm{{{result}}}" if tex else result
 
     def get_scale(self):
@@ -279,7 +282,6 @@ A = Unit('A')
 K = Unit('K')
 mol = Unit('mol')
 cd = Unit('cd')
-
 rad = Unit('rad')
 
 # Units
@@ -295,7 +297,6 @@ T = (Wb / m ** -2)('T')
 H = (Wb / A)('H')
 Omega = (V / A)('Ω')
 Hz = (s ** -1)('Hz')
-L = (kilo * (centi * m)**3)('L')
 
 # SI併用単位
 celcius = (K - 273)('℃')
@@ -307,3 +308,4 @@ arc_degree = ((180 / math.pi) * rad)('°')
 arc_minute = (arc_degree * 60.0)('′')
 arc_second = (arc_minute * 60.0)('″')
 eV = (1.602176634e-19 * J)('eV')
+L = (kilo * (centi * m)**3)('L')

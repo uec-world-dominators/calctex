@@ -5,7 +5,7 @@ def toexp(e):
     '''
     累乗
     '''
-    return f'\\times 10^{{{e}}}' * bool(e)
+    return (' \\times 10' + f'^{{{e}}}' * (e != 1)) * bool(e)
 
 
 def round_at(value, significant):
@@ -19,7 +19,7 @@ def zero_padding(significant, main):
     '''
     有効数字までゼロ埋め
     '''
-    return "0" * (significant - len(main))
+    return "0" * (significant - len(list(filter(lambda e: e != '.', main))))
 
 
 def dot(significant, main):
