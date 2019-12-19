@@ -142,7 +142,7 @@ class Calc:
                 if other.parentheses:
                     raw = r"\left( " + other.raw + r" \right) \times \left( " + self.raw + r" \right)"
                 else:
-                    raw = r"\left( " + other.raw + " \right) \times " + self.raw
+                    raw = r"\left( " + other.raw + r" \right) \times " + self.raw
             else:
                 if other.parentheses:
                     raw = other.raw + r" \times \left( " + self.raw + r" \right)"
