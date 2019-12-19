@@ -49,7 +49,7 @@ assert(str(Value(1.0, unit.L).expect(unit.L)) == r'<1.0 <L>>')
 assert(unit.m.tex() == r'\mathrm{m}')
 assert(Value(1,unit.m).tex(unit=False) == r'1')
 assert(Value(1,unit.m).tex() == r'1\,\mathrm{m}')
-assert(Value(1,unit.m).tex(digits=3) == r'1.00\,\mathrm{m}')
+assert(Value(1,unit.m).tex(significant=3) == r'1.00\,\mathrm{m}')
 
 print('OK')
 
@@ -65,3 +65,7 @@ from src.calc import Calc
 a = Value(4, m, 5)
 b = Value(40, m)
 print((Calc(a) + Calc(b)).tex())
+
+
+a = Calc(multi([1,2,3],m,significant=3)) + Calc(Value(4,m,significant= 2))
+print(Calc(a).tex())

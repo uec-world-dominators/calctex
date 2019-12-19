@@ -11,9 +11,9 @@ class Value:
     ```
     '''
 
-    def __init__(self, value, unit=Unit({}), digits=math.inf, trans_normarized=False):
+    def __init__(self, value, unit=Unit({}), significant=math.inf, trans_normarized=False):
         self.unit = (unit or Unit({})).clone()
-        self.digits = digits
+        self.significant = significant
         self.value = value if trans_normarized else self.unit.inv_trans_value(value)
         if len(self.unit.rules):
             self.unit.rules = []
@@ -21,13 +21,13 @@ class Value:
             self.unit.symbol = None
 
     def clone(self):
-        value = Value(self.value, self.unit.clone(), self.digits)
+        value = Value(self.value, self.unit.clone(), self.significant)
         return value
 
     def info(self):
         return f"""
         value           : {self.value}
-        digits          : {self.digits}
+        significant          : {self.significant}
 
         unit            : {self.unit.info()}
         """
@@ -52,13 +52,13 @@ class Value:
                 else:
                     _self = self
                     _e = e
-                digits = min(_self.digits, _e.digits)
-                return Value(_self.value + _e.value, _self.unit.clone(), digits, True)
+                significant = min(_self.significant, _e.significant)
+                return Value(_self.value + _e.value, _self.unit.clone(), significant, True)
             else:
                 raise 'illegal addition (different dimention)'
         else:
             if self.unit.is_zero_dim():
-                return Value(self.value + e, self.unit.clone(), self.digits)
+                return Value(self.value + e, self.unit.clone(), self.significant)
             else:
                 raise 'illegal addition (ambigant dimention)'
 
@@ -66,10 +66,10 @@ class Value:
         _self = self.clone().normarize()
         if isinstance(e, Value):
             _e = e.clone().normarize()
-            digits = min(_self.digits, _e.digits)
-            return Value(_self.value * _e.value, _self.unit * e.unit, digits, True)
+            significant = min(_self.significant, _e.significant)
+            return Value(_self.value * _e.value, _self.unit * e.unit, significant, True)
         else:
-            return Value(_self.value * e, _self.unit.clone(), _self.digits, True)
+            return Value(_self.value * e, _self.unit.clone(), _self.significant, True)
 
     def __pow__(self, e):
         if isinstance(e, Value):
@@ -80,7 +80,7 @@ class Value:
         else:
             _e = e
         _self = self.clone().normarize()
-        return Value(_self.value**_e, _self.unit**_e, _self.digits, True)
+        return Value(_self.value**_e, _self.unit**_e, _self.significant, True)
 
     def __truediv__(self, e):
         return self * e**-1
@@ -118,11 +118,11 @@ class Value:
         _self.value = _unit.trans_value(_self.value) * 10 ** e
         return _self
 
-    def tex(self, digits=None, unit=True):
-        if not digits and self.digits == math.inf:
+    def tex(self, significant=None, unit=True):
+        if not significant and self.significant == math.inf:
             main = str(self.value)
         else:
-            main = roundtex(self.value, self.digits if digits == None else digits)
+            main = roundtex(self.value, self.significant if significant == None else significant)
         return main + ('\\,' + self.unit.tex() if unit and not self.unit.is_zero_dim() else '')
 
     def fn(self, fn, multi_dim=False):
@@ -131,7 +131,7 @@ class Value:
         multi_dim : 非零次元を許可するか
         '''
         if not multi_dim and self.unit.is_zero_dim():
-            return Value(fn(self.value), self.unit.clone(), self.digits)
+            return Value(fn(self.value), self.unit.clone(), self.significant)
         else:
             raise "not zero dimention"
 
