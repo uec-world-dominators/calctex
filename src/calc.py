@@ -105,7 +105,7 @@ class Calc:
                 if other.parentheses:
                     tex = r"{" + self.tex + r"}^{\left( " + other.tex + r"\right)}"
                 else:
-                    tex = r"{" + self.tex + r"}^{ " + other.tex + r"}"
+                    tex = r"{" + self.tex + r"}^{" + other.tex + r"}"
         else:
             value = self.value**other
             if self.parentheses:
