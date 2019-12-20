@@ -1,7 +1,7 @@
 import numpy as np
 import math
-from src.value import Value
-from src.unit import Unit
+from calctex.value import Value
+from calctex.unit import Unit
 
 
 def point_digit_to_significant_figure(n, point_digit=0):

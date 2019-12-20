@@ -1,12 +1,12 @@
-from src.unit.basic import *
+from calctex.unit.basic import *
 assert(('m' in locals()) == True)
 assert(('Pa' in locals()) == False)
 
-from src import Value
-from src import unit
-from src import constants
-from src.helper import decimal_point, multi
-from src.common import roundtex
+from calctex import Value
+from calctex import unit
+from calctex import constants
+from calctex.helper import decimal_point, multi
+from calctex.common import roundtex
 
 
 # Common
@@ -56,11 +56,11 @@ print('OK')
 #%%
 import math
 import numpy as np
-from src import Value
-from src.unit import nano, m, s, mili, N, Pa, L
-from src.common import roundtex
-from src.helper import decimal_point
-from src.calc import Calc
+from calctex import Value
+from calctex.unit import nano, m, s, mili, N, Pa, L
+from calctex.common import roundtex
+from calctex.helper import decimal_point
+from calctex.calc import Calc
 
 a = Value(4, m, 5)
 b = Value(40, m)
