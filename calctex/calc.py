@@ -18,13 +18,13 @@ class Calc:
         else:
             raise ValueError("error!")
         self.value = x
-        if raw:
+        if isinstance(raw, ndarray) or raw:
             self.raw = raw
         else:
             if isinstance(x, Value):
                 self.raw = self.value.tex()
             elif isinstance(x, ndarray):
-                self.raw = np.array(self.raw())
+                self.raw = np.array(self.raw(), dtype="object")
         self.parentheses = parentheses
 
     def raw(self):
@@ -180,16 +180,29 @@ class Calc:
     def __repr__(self):
         return str(self.raw)
 
-    def tex(self, variable=""):
+    def tex(self, variable="", how="first"):
         if isinstance(self.value, (Value, int, float)):
             result = self.value
-        else:
-            result = self.value[0]
-        tex = r"""\begin{align*}
+            tex = r"""\begin{align*}
    %s &= %s \\
     &= %s
 \end{align*}""" % (variable, self.raw, result.tex())
-        return tex
+            return tex
+        else:
+            if how == "first":
+                result = self.value[0]
+                tex = r"""\begin{align*}
+   %s &= %s \\
+    &= %s
+\end{align*}""" % (variable, self.raw[0], result.tex())
+                return tex
+            if how == "all":
+                result = [i for i in self.value]
+                tex = [r"""\begin{align*}
+   %s &= %s \\
+    &= %s
+\end{align*}""" % (variable, i, j.tex()) for i, j in zip(self.raw, result)]
+                return tex
 
     def clear(self):
         self.raw = ""
