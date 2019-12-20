@@ -7,3 +7,7 @@ lint:
 
 test:
 	python3 test.py
+
+pypi:
+	python setup.py bdist_wheel
+	twine upload --repository pypi dist/*
