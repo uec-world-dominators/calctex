@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 from codecs import open
 from os import path
 
@@ -9,7 +9,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='calctex',
-    packages=['calctex'],
+    packages=find_packages(),
     version='0.0.1',
     license='MIT',
     install_requires=['numpy'],
@@ -26,4 +26,5 @@ setup(
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
     ],
+    python_requires='>=3.6'
 )
