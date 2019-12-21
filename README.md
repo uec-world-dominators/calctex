@@ -8,18 +8,33 @@
  `Y8bood8P'  `Y888""8o o888o `Y8bod8P'     o888o     `Y8bod8P' o888o  o88888o 
 ```
 
-# CalcTeX(開発中)
+# CalcTeX
 
 
 ![](https://github.com/uec-world-dominators/calctex/workflows/Python%20package%20CI/badge.svg)
 
+## `Unit`
 ```py
-lambda_ = Calc([Value(300, m), Value(400, m)])
-# [300, 400]*m
-300 * m
-f = Calc([Value(170, Hz), Value(340, Hz)])
+from calctex.unit import *
 
-v = f * lambda_  # Calc
-print(v.tex(['v_1', 'v_2'])[0])  # 'v_1 = ...'
-print(v.value())
+print(N == kg*m*s**-2)
+# True
+print(Pa == N/m**2)
+# True
 ```
+
+## `Value`
+```py
+from calctex.unit import N, m, Pa
+f = 4 & N | 3     # 力   4.00 N     有効数字3桁
+s = 2 & m**2 | 4  # 面積 2.000 m^2  有効数字4桁
+
+p = f / s         # 圧力
+
+print(p.tex())
+# 2.00\,\mathrm{kg \cdot m^{-1} \cdot s^{-2}}
+print(p.expect(Pa).tex())
+# 2.00\,\mathrm{Pa}
+```
+
+## `Calc`
