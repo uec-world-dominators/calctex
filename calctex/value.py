@@ -21,14 +21,12 @@ class Value:
             self.unit.symbol = None
 
     def clone(self):
-        value = Value(self.value, self.unit.clone(), self.significant)
-        return value
+        return Value(self.value, self.unit.clone(), self.significant)
 
     def info(self):
         return f"""
         value           : {self.value}
-        significant          : {self.significant}
-
+        significant     : {self.significant}
         unit            : {self.unit.info()}
         """
 
@@ -108,6 +106,11 @@ class Value:
 
     def __repr__(self):
         return f"<{self.value} {self.unit}>"
+
+    def __or__(self,e):
+        _self = self.clone()
+        _self.significant = e
+        return _self
 
     def expect(self, *us):
         _self = self.clone()

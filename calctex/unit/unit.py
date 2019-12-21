@@ -56,7 +56,7 @@ class Unit:
         rules: {self.rules_history}
         """
 
-    def __ror__(self, e):
+    def __rand__(self, e):
         from ..value import Value
         return Value(e, self)
 
