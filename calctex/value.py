@@ -1,6 +1,6 @@
 import math
-from calctex.unit import Unit
-from calctex.common import roundtex
+from .unit import Unit
+from .common import roundtex
 
 
 class Value:

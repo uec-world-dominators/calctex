@@ -1,5 +1,5 @@
-from calctex.unit import Unit
-from calctex.value import Value
-from calctex.calc import Calc
+from .unit import Unit
+from .value import Value
+from .calc import Calc
 
 Unit, Value, Calc

@@ -1,9 +1,9 @@
 #%%
-from calctex.common import roundtex
-from calctex.value import Value
+from .common import roundtex
+from .value import Value
 from numpy import ndarray
 import numpy as np
-from calctex.unit import *
+from .unit import *
 
 class Calc:
     def __init__(self, x, parentheses=False, raw=""):
