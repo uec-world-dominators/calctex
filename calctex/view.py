@@ -16,6 +16,8 @@ def _validate(data, header=[]):
     if len(header) and data.shape[1] != len(header):
         raise Exception('dimention does not match with header length')
 
+    return data, header
+
 
 def _to_str_list(data):
     return list(map(lambda e: str(e), data))
@@ -30,7 +32,7 @@ def _to_tex_row(data):
 
 
 def to_markdown_table(data, header=[]):
-    _validate(data, header)
+    data, header = _validate(data, header)
     result = []
     if len(header):
         result.append(_to_markdown_row(header))
@@ -41,7 +43,7 @@ def to_markdown_table(data, header=[]):
 
 
 def to_tex_table(data, header=[]):
-    _validate(data, header)
+    data, header = _validate(data, header)
     result = []
     if len(header):
         result.append(_to_tex_row(header))
