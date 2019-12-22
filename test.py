@@ -1,3 +1,4 @@
+import numpy as np
 from calctex.unit.basic import *
 assert(('m' in locals()) == True)
 assert(('Pa' in locals()) == False)
@@ -50,6 +51,12 @@ assert(unit.m.tex() == r'\mathrm{m}')
 assert(Value(1,unit.m).tex(unit=False) == r'1')
 assert(Value(1,unit.m).tex() == r'1\,\mathrm{m}')
 assert(Value(1,unit.m).tex(significant=3) == r'1.00\,\mathrm{m}')
+
+# View
+from calctex.view import to_markdown_table, to_tex_table
+assert(to_markdown_table([[1, 2], [2, 3]], ['a', 'b']) == '''|a|b|\n|---|---|\n|1|2|\n|2|3|''')
+assert(to_tex_table(np.array([[1, 2], [2, 3]]), ['a', 'b']) == '''a & b \\\\\n1 & 2 \\\\\n2 & 3 \\\\''')
+assert(to_tex_table(np.array([[1, 2], [2, 3]])) == '''1 & 2 \\\\\n2 & 3 \\\\''')
 
 print('OK')
 
