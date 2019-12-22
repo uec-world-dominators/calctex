@@ -17,7 +17,7 @@
 ## `Value`
 ```py
 from calctex.unit import N, m, Pa
-f = 40 & N | 3     # 力   4.00 N     有効数字3桁
+f = 40 & N | 3    # 力   4.00 N     有効数字3桁
 s = 2 & m**2 | 4  # 面積 2.000 m^2  有効数字4桁
 
 p = f / s         # 圧力
