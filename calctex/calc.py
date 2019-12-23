@@ -180,7 +180,7 @@ class Calc:
     def __repr__(self):
         return str(self.raw)
 
-    def tex(self, variable="", how="first"):
+    def tex(self, variable="", output="all"):
         if isinstance(self.value, (Value, int, float)):
             result = self.value
             tex = r"""\begin{align*}
@@ -189,14 +189,14 @@ class Calc:
 \end{align*}""" % (variable, self.raw, result.tex())
             return tex
         else:
-            if how == "first":
+            if output == "first":
                 result = self.value[0]
                 tex = r"""\begin{align*}
    %s &= %s \\
     &= %s
 \end{align*}""" % (variable, self.raw[0], result.tex())
                 return tex
-            if how == "all":
+            if output == "all":
                 result = [i for i in self.value]
                 tex = [r"""\begin{align*}
    %s &= %s \\
