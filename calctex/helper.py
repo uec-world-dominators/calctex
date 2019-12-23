@@ -19,4 +19,22 @@ def decimal_point(data, unit=Unit({}), point_digit=0):
 
 
 def multi(data, unit=Unit({}), significant=math.inf):
+    '''
+    複数の値に同一の有効桁数を設定する
+    '''
     return np.array(list(map(lambda e: Value(e, unit and unit.clone(), significant), data)))
+
+
+def from_str(data, unit=Unit({})):
+    '''
+    文字列から有効桁数を読み取る
+    '''
+    v = float(data)
+    return Value(v, unit, significant=len(data) - bool(v % 1))
+
+
+def from_strs(data, unit=Unit({})):
+    '''
+    文字列のリストをValueのリストに変換
+    '''
+    return np.array(list(map(lambda e: from_str(e, unit), data)))

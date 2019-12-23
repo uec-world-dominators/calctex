@@ -58,6 +58,9 @@ assert(to_markdown_table([[1, 2], [2, 3]], ['a', 'b']) == '''|a|b|\n|---|---|\n|
 assert(to_tex_table(np.array([[1, 2], [2, 3]]), ['a', 'b']) == '''a & b \\\\\n1 & 2 \\\\\n2 & 3 \\\\''')
 assert(to_tex_table(np.array([[1, 2], [2, 3]])) == '''1 & 2 \\\\\n2 & 3 \\\\''')
 
+from calctex.helper import from_str,from_strs
+assert(list(map(lambda e: e.tex(),from_strs(['1.2','12','0.12'])))==['1.2', '1.2 \\times 10', '1.20 \\times 10^{-1}'])
+
 print('OK')
 
 #%%
@@ -72,8 +75,3 @@ from calctex.calc import Calc
 a = Value(4, m, 5)
 b = Value(40, m)
 print((Calc(a) + Calc(b)).tex())
-
-# a = Calc(multi([1,2,3],m,significant=3)) + Calc(Value(4,m,significant= 2))
-# print(a.tex())
-
-# print(Calc([Value(1, m), Value(2, m), Value(3, m)])+Calc(Value(1, m)))
