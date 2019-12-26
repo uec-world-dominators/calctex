@@ -2,10 +2,10 @@ from .unit import *
 
 
 __all__ = [
-    'kilo',
-    'hecto',
-    'centi',
-    'mili',
-    'micro',
-    'nano',
+    'kilo_',
+    'hecto_',
+    'centi_',
+    'mili_',
+    'micro_',
+    'nano_',
 ]

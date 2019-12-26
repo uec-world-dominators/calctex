@@ -25,16 +25,19 @@ def multi(data, unit=Unit({}), significant=math.inf):
     return np.array(list(map(lambda e: Value(e, unit and unit.clone(), significant), data)))
 
 
-def from_str(data, unit=Unit({})):
-    '''
-    文字列から有効桁数を読み取る
-    '''
-    v = float(data)
-    return Value(v, unit, significant=len(data) - bool(v % 1))
-
-
 def from_strs(data, unit=Unit({})):
     '''
     文字列のリストをValueのリストに変換
     '''
-    return np.array(list(map(lambda e: from_str(e, unit), data)))
+    return np.array(list(map(lambda e: Value.from_str(e, unit), data)))
+
+def auto(data, unit=Unit({})):
+    if isinstance(data, np.ndarray):
+        pass
+    elif isinstance(data, list):
+        data = np.array(data)
+    else:
+        data = np.array([data])
+
+def c(data, unit=Unit({}), sig_figs=math.inf):
+    return Calc(Value(data, unit, sig_figs))

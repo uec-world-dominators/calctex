@@ -1,7 +1,7 @@
 import numpy as np
 from calctex.unit.basic import *
-assert(('m' in locals()) == True)
-assert(('Pa' in locals()) == False)
+assert(('m_' in locals()) == True)
+assert(('Pa_' in locals()) == False)
 
 from calctex import Value
 from calctex import unit
@@ -21,36 +21,36 @@ assert(roundtex(203, 2) == r'2.0 \times 10^{2}')
 assert(roundtex(0.99366103, 4) == r'9.937 \times 10^{-1}')
 
 # Unit
-assert(str(unit.fahrenheit) == r'<°F>')
-assert(str((unit.nano * unit.m * unit.s) / (unit.mili * unit.m)) == r'<μs>')
-assert(str(unit.nano * unit.N * unit.Pa * unit.m) == r'<nkg2ms-4>')
-assert(str((unit.nano * unit.N * unit.Pa * unit.m ** -1)
-           .expect((unit.mili * unit.Pa)('mPa'), unit.N).to_expr(tex=True)) == r'\mathrm{\mumPa \cdot N \cdot m^{-1}}')
+assert(str(unit.fahrenheit_) == r'<°F>')
+assert(str((unit.nano_ * unit.m_ * unit.s_) / (unit.mili_ * unit.m_)) == r'<μs>')
+assert(str(unit.nano_ * unit.N_ * unit.Pa_ * unit.m_) == r'<nkg2ms-4>')
+assert(str((unit.nano_ * unit.N_ * unit.Pa_ * unit.m_ ** -1)
+           .expect((unit.mili_ * unit.Pa_)('mPa'), unit.N_).to_expr(tex=True)) == r'\mathrm{\mumPa \cdot N \cdot m^{-1}}')
 
 # Value
-assert(str(Value(1, unit.mili * unit.s).expect(unit.s)) == r'<0.001 <s>>')
-a = Value(1, unit.nano * unit.s)
-assert(a.tex(4) == r'1.000\,\mathrm{ns}')
-assert(a.expect(unit.s).tex(2) == r'1.0 \times 10^{-9}\,\mathrm{s}')
-assert(str(Value(1, unit.L).expect(unit.m)) == r'<0.001 <m3>>')
+assert(str(Value(1, unit.mili_ * unit.s_).expect(unit.s_)) == r'<0.001 <s>>')
+a = Value(1, unit.nano_ * unit.s_)
+assert(a.tex(4) == r'1.000 \,\mathrm{ns}')
+assert(a.expect(unit.s_).tex(2) == r'1.0 \times 10^{-9} \,\mathrm{s}')
+assert(str(Value(1, unit.L_).expect(unit.m_)) == r'<0.001 <m3>>')
 
 # SI併用坘佝
-assert(str(Value(1, unit.minute) - Value(50, unit.s)) == r'<10.0 <s>>')
-assert(str((Value(3600, unit.s) + Value(0.5, unit.h)).expect(unit.minute)) == r'<90.0 <min>>')
-assert(str((Value(300, unit.K) - Value(27, unit.celcius)).expect(unit.celcius)) == r'<-273 <℃>>')
-assert(str(Value(0, unit.fahrenheit).expect(unit.K)) == r'<255.37222222222223 <K>>')
-assert(str(Value(60, unit.arc_minute).expect(unit.arc_degree) == r'<1.0 <°>>'))
-assert(str(Value(1.0, unit.L).expect(unit.m)) == r'<0.001 <m3>>')
+assert(str(Value(1, unit.minute_) - Value(50, unit.s_)) == r'<10.0 <s>>')
+assert(str((Value(3600, unit.s_) + Value(0.5, unit.h_)).expect(unit.minute_)) == r'<90.0 <min>>')
+assert(str((Value(300, unit.K_) - Value(27, unit.celcius_)).expect(unit.celcius_)) == r'<-273 <℃>>')
+assert(str(Value(0, unit.fahrenheit_).expect(unit.K_)) == r'<255.37222222222223 <K>>')
+assert(str(Value(60, unit.arc_minute_).expect(unit.arc_degree_) == r'<1.0 <°>>'))
+assert(str(Value(1.0, unit.L_).expect(unit.m_)) == r'<0.001 <m3>>')
 
 # スケール㝮入㝣㝟坘佝㝧expect
-assert(str(Value(1.0, unit.m).expect((unit.mili * unit.m)('mm'))) == r'<1000.0 <mm>>')
-assert(str(Value(1.0, unit.L).expect(unit.L)) == r'<1.0 <L>>')
+assert(str(Value(1.0, unit.m_).expect((unit.mili_ * unit.m_)('mm'))) == r'<1000.0 <mm>>')
+assert(str(Value(1.0, unit.L_).expect(unit.L_)) == r'<1.0 <L>>')
 
 # Tex
-assert(unit.m.tex() == r'\mathrm{m}')
-assert(Value(1,unit.m).tex(unit=False) == r'1')
-assert(Value(1,unit.m).tex() == r'1\,\mathrm{m}')
-assert(Value(1,unit.m).tex(significant=3) == r'1.00\,\mathrm{m}')
+assert(unit.m_.tex() == r'\mathrm{m}')
+assert(Value(1,unit.m_).tex(unit=False) == r'1')
+assert(Value(1,unit.m_).tex() == r'1 \,\mathrm{m}')
+assert(Value(1,unit.m_).tex(significant=3) == r'1.00 \,\mathrm{m}')
 
 # View
 from calctex.view import to_markdown_table, to_tex_table
@@ -58,7 +58,7 @@ assert(to_markdown_table([[1, 2], [2, 3]], ['a', 'b']) == '''|a|b|\n|---|---|\n|
 assert(to_tex_table(np.array([[1, 2], [2, 3]]), ['a', 'b']) == '''a & b \\\\\n1 & 2 \\\\\n2 & 3 \\\\''')
 assert(to_tex_table(np.array([[1, 2], [2, 3]])) == '''1 & 2 \\\\\n2 & 3 \\\\''')
 
-from calctex.helper import from_str,from_strs
+from calctex.helper import from_strs
 assert(list(map(lambda e: e.tex(),from_strs(['1.2','12','0.12'])))==['1.2', '1.2 \\times 10', '1.20 \\times 10^{-1}'])
 
 print('OK')
@@ -67,11 +67,16 @@ print('OK')
 import math
 import numpy as np
 from calctex import Value
-from calctex.unit import nano, m, s, mili, N, Pa, L
+from calctex.unit import nano_, m_, s_, mili_, N_, Pa_, L_
 from calctex.common import roundtex
-from calctex.helper import decimal_point
+from calctex.helper import decimal_point, multi, c
 from calctex.calc import Calc
 
-a = Value(4, m, 5)
-b = Value(40, m)
-print((Calc(a) + Calc(b)).tex())
+a = from_strs(['1','2.3','4'],m_)
+b = Value(40, m_, 4)
+pi = Calc(Value(math.pi),symbol='\\pi')
+print((pi*(Calc(a, symbol="d") + Calc(b, symbol='H'))).symbol())
+print((Calc(Value(1,m_),symbol='y') * (Calc(a, symbol="d") + Calc(b, symbol='H'))).tex()[0])
+print('3.4' * m_)
+
+

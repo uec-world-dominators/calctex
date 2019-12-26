@@ -12,7 +12,7 @@ class Value:
     '''
 
     def __init__(self, value, unit=Unit({}), significant=math.inf, trans_normarized=False):
-        self.unit = (unit or Unit({})).clone()
+        self.unit = unit and unit.clone() or Unit({})
         self.significant = significant
         self.value = value if trans_normarized else self.unit.inv_trans_value(value)
         if len(self.unit.rules):
@@ -126,7 +126,7 @@ class Value:
             main = str(self.value)
         else:
             main = roundtex(self.value, self.significant if significant == None else significant)
-        return main + ('\\,' + self.unit.tex() if unit and not self.unit.is_zero_dim() else '')
+        return main + (' \\,' + self.unit.tex() if unit and not self.unit.is_zero_dim() else '')
 
     def fn(self, fn, multi_dim=False):
         '''
@@ -205,4 +205,12 @@ class Value:
         return self.fn(abs, multi_dim=True)
 
     def rint(self):
-        return self.fn(round, multi_dim=True)
+            return self.fn(round, multi_dim=True)
+
+    @staticmethod
+    def from_str(data: [str], unit: Unit = Unit({})): 
+        '''
+        文字列から有効桁数を読み取る
+        '''
+        v = float(data)
+        return Value(v, unit and unit.clone(), significant=len(data) - bool(v % 1))
