@@ -77,6 +77,6 @@ b = Value(40, m_, 4)
 pi = Calc(Value(math.pi),symbol='\\pi')
 print((pi*(Calc(a, symbol="d") + Calc(b, symbol='H'))).symbol())
 print((Calc(Value(1,m_),symbol='y') * (Calc(a, symbol="d") + Calc(b, symbol='H'))).tex()[0])
-print('3.4' * m_)
+print('3.4' & m_)
 
 

@@ -59,8 +59,8 @@ class Unit:
     def __rand__(self, e):
         from ..value import Value
         if isinstance(e, str):
-            from ..helper import from_str
-            return from_str(e, self)
+            from ..value import Value
+            return Value.from_str(e, self)
         else:
             return Value(float(e), self)
 
