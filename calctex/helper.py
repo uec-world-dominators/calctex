@@ -2,6 +2,7 @@ import numpy as np
 import math
 from .value import Value
 from .unit import Unit
+from .calc import Calc
 
 
 def point_digit_to_significant_figure(n, point_digit=0):
