@@ -32,13 +32,23 @@ def from_strs(data, unit=Unit({})):
     '''
     return np.array(list(map(lambda e: Value.from_str(e, unit), data)))
 
-def auto(data, unit=Unit({})):
-    if isinstance(data, np.ndarray):
-        pass
-    elif isinstance(data, list):
-        data = np.array(data)
-    else:
-        data = np.array([data])
 
-def c(data, unit=Unit({}), sig_figs=math.inf):
-    return Calc(Value(data, unit, sig_figs))
+def auto(data, unit=Unit({}), significant=math.inf, point_digit=None):
+    '''
+
+    '''
+    if isinstance(data, str):
+        value = Value.from_str(data, unit)
+    elif isinstance(data, (int, float)):
+        if point_digit != None:
+            significant = point_digit_to_significant_figure(data, point_digit)
+        value = Value(data, unit, significant)
+    return value
+
+
+def c(data, unit=Unit({}), sig_figs=math.inf, point_digit=None, symbol=None):
+    if isinstance(data, (np.ndarray, list)):
+        v = list(map(lambda e: auto(e, unit, sig_figs, point_digit), data))
+    else:
+        v = auto(data, unit, sig_figs, point_digit)
+    return Calc(v, symbol=symbol)

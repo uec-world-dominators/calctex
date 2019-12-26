@@ -1,13 +1,16 @@
 import numpy as np
+import math
+from calctex.calc import Calc
+from calctex.helper import decimal_point, multi, c
+from calctex.helper import from_strs
+from calctex.view import to_markdown_table, to_tex_table
+from calctex.common import roundtex
+from calctex import constants
+from calctex import unit
+from calctex import Value
 from calctex.unit.basic import *
 assert(('m_' in locals()) == True)
 assert(('Pa_' in locals()) == False)
-
-from calctex import Value
-from calctex import unit
-from calctex import constants
-from calctex.helper import decimal_point, multi
-from calctex.common import roundtex
 
 
 # Common
@@ -48,35 +51,25 @@ assert(str(Value(1.0, unit.L_).expect(unit.L_)) == r'<1.0 <L>>')
 
 # Tex
 assert(unit.m_.tex() == r'\mathrm{m}')
-assert(Value(1,unit.m_).tex(unit=False) == r'1')
-assert(Value(1,unit.m_).tex() == r'1 \,\mathrm{m}')
-assert(Value(1,unit.m_).tex(significant=3) == r'1.00 \,\mathrm{m}')
+assert(Value(1, unit.m_).tex(unit=False) == r'1')
+assert(Value(1, unit.m_).tex() == r'1 \,\mathrm{m}')
+assert(Value(1, unit.m_).tex(significant=3) == r'1.00 \,\mathrm{m}')
 
 # View
-from calctex.view import to_markdown_table, to_tex_table
 assert(to_markdown_table([[1, 2], [2, 3]], ['a', 'b']) == '''|a|b|\n|---|---|\n|1|2|\n|2|3|''')
 assert(to_tex_table(np.array([[1, 2], [2, 3]]), ['a', 'b']) == '''a & b \\\\\n1 & 2 \\\\\n2 & 3 \\\\''')
 assert(to_tex_table(np.array([[1, 2], [2, 3]])) == '''1 & 2 \\\\\n2 & 3 \\\\''')
 
-from calctex.helper import from_strs
-assert(list(map(lambda e: e.tex(),from_strs(['1.2','12','0.12'])))==['1.2', '1.2 \\times 10', '1.20 \\times 10^{-1}'])
+assert(list(map(lambda e: e.tex(), from_strs(['1.2', '12', '0.12']))) == ['1.2', '1.2 \\times 10', '1.20 \\times 10^{-1}'])
+
+# Calc
+assert(str(c(45, unit.m_, sig_figs=2)) == r'4.5 \times 10 \,\mathrm{m}')
+a = c(['1', '2.3', '4'], unit.m_, symbol='d')
+b = c(40, unit.m_, 4, symbol='H')
+y = c(1, unit.m_, symbol='y')
+pi = c(math.pi, symbol='\\pi')
+assert((pi * (a + b)).symbol() == r'\pi \, \left( d + H \right)')
+assert((y * (a + b)).tex()[0] == '\\begin{align*}\n    &= 1 \,\mathrm{m} \\times \left( 1 \,\mathrm{m} + 4.000 \\times 10 \,\mathrm{m} \\right) \\\\\n    &= 4 \\times 10 \,\mathrm{m^{2}}\n\end{align*}')
+assert(str('3.4' & unit.m_) == r'<3.4 <m>>')
 
 print('OK')
-
-#%%
-import math
-import numpy as np
-from calctex import Value
-from calctex.unit import nano_, m_, s_, mili_, N_, Pa_, L_
-from calctex.common import roundtex
-from calctex.helper import decimal_point, multi, c
-from calctex.calc import Calc
-
-a = from_strs(['1','2.3','4'],m_)
-b = Value(40, m_, 4)
-pi = Calc(Value(math.pi),symbol='\\pi')
-print((pi*(Calc(a, symbol="d") + Calc(b, symbol='H'))).symbol())
-print((Calc(Value(1,m_),symbol='y') * (Calc(a, symbol="d") + Calc(b, symbol='H'))).tex()[0])
-print('3.4' & m_)
-
-

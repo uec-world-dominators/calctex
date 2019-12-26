@@ -220,7 +220,6 @@ class Calc:
         return str(self.raw)
 
     def tex(self, variable="", output="all"):
-        print(type(self.value), self.value)
         if isinstance(self.value, (Value, int, float)):
             result = self.value
             tex = r"""\begin{align*}
