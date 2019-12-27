@@ -289,6 +289,7 @@ cd_ = Unit('cd')
 rad_ = Unit('rad')
 
 # Units
+g_ = (mili_ * kg_)('g')
 N_ = (kg_ * m_ * s_**-2)('N')
 Pa_ = (N_ * m_**-2)('Pa')
 C_ = (A_ * s_)('C')
