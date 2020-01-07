@@ -221,10 +221,16 @@ class Calc:
         return str(self.raw)
 
     def md(self):
+        def _format_md(raw, result):
+            return f"$$\n    {raw} \n    = {result}\n$$\n"
         if isinstance(self.value, Value):
-            return f"{self.raw} \n    = {self.value.tex()}"
+            return _format_md(self.raw, self.value.tex())
         else:
-            return [f"{e.raw} \n    = {e.value.tex()}" for e in self.value]
+            return [_format_md(raw, value.tex()) for raw, value
+                    in zip(self.raw, self.value)]
+
+    def result(self):
+        return self.value
 
     def tex(self, variable="", output="all"):
         if isinstance(self.value, (Value, int, float)):
@@ -252,10 +258,10 @@ class Calc:
 
     def clear(self):
         self.raw = ""
-    
+
     def __call__(self, symbol):
         self.symbol = symbol
         return self
-    
+
     def symbol(self):
         return self._symbol
