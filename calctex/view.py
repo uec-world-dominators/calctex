@@ -1,7 +1,13 @@
 import numpy as np
 
 
-def _validate(data, header=[], transpose=False, row_header=None):
+def _validate(data, header=[], transpose=False, row_header=None, corner=''):
+    '''
+    データ形式の検証と正則化
+    '''
+    if row_header:
+        header.insert(0, corner)
+
     if isinstance(data, list):
         if all(isinstance(e, list) and len(e) == len(data[0]) for e in data):
             data = np.array(data)
@@ -28,18 +34,37 @@ def _validate(data, header=[], transpose=False, row_header=None):
 
 
 def _to_str_list(data, transferer=id):
+    '''
+    何らかのリストを文字列のリストにする
+    '''
     return list(map(lambda e: transferer(e), data))
 
 
-def _to_markdown_row(data, transferer=id):
-    return f"|{'|'.join(_to_str_list(data,transferer))}|"
+def _to_str_list_w(widths):
+    '''
+    幅を指定して文字列のリストにする
+    '''
+    return lambda data: list(map(lambda e: str(e[1]).ljust(widths[e[0]]), enumerate(data)))
+
+
+def _to_markdown_row(data, _to_str=_to_str_list):
+    '''
+    Markdown形式の行を出力する
+    '''
+    return f"|{'|'.join(_to_str(data))}|"
 
 
 def _to_tex_row(data):
+    '''
+    TeX形式の行を出力する
+    '''
     return f"{' & '.join(_to_str_list(data,str))} \\\\"
 
 
 def _to_str_matrix(data):
+    '''
+    何らかの行列を文字列の行列に変換する
+    '''
     if isinstance(data, (list, np.ndarray)):
         return [_to_str_matrix(e) for e in data]
     elif isinstance(data, str):
@@ -49,25 +74,39 @@ def _to_str_matrix(data):
 
 
 def _max_str_len(data):
+    '''
+    リストの中で最も文字列長が長いものを求める
+    '''
     if isinstance(data, (list, np.ndarray)):
         return max(map(_max_str_len, data))
     else:
         return len(data)
 
 
+def _max_str_lens(data):
+    '''
+    各列ごとの最大の文字列長を求める
+    '''
+    max_lens = np.max(np.frompyfunc(lambda e: len(e), 1, 1)(data), axis=0)
+    max_lens = np.where(max_lens < 3, 3, max_lens + 1)
+    return max_lens
+
+
 def to_markdown_table(data, header=[], transpose=False, row_header=None, corner=''):
-    if row_header:
-        header.insert(0, corner)
-    data, header = _validate(data, header, transpose, row_header)
-    result = []
+    data, header = _validate(data, header, transpose, row_header, corner)
+    
+    # 列ごとの最大文字列長を求める
     header_str, data_str = _to_str_matrix(header), _to_str_matrix(data)
-    max_len = _max_str_len([header_str or [''], data_str or [''], '---']) + 1
-    def transferer(e): return e.ljust(max_len)
+    max_lens = _max_str_lens(np.concatenate(
+        (np.array(header_str).reshape(1, -1), np.array(data_str)), axis=0))
+    _to_str = _to_str_list_w(max_lens)
+
+    result = []
     if len(header):
-        result.append(_to_markdown_row(header_str, transferer))
-        result.append(_to_markdown_row(list(map(lambda e: '-'*max_len, header)), transferer))
+        result.append(_to_markdown_row(header_str, _to_str))
+        result.append(_to_markdown_row(list(map(lambda e: '-'*e[1], enumerate(max_lens))), _to_str))
     for row in data_str:
-        result.append(_to_markdown_row(row, transferer))
+        result.append(_to_markdown_row(row, _to_str))
     return '\n'.join(result)
 
 
