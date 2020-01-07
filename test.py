@@ -56,11 +56,15 @@ assert(Value(1, unit.m_).tex() == r'1 \,\mathrm{m}')
 assert(Value(1, unit.m_).tex(significant=3) == r'1.00 \,\mathrm{m}')
 
 # View
-assert(to_markdown_table([[1, 2], [2, 3]], ['a', 'b']) == '''|a|b|\n|---|---|\n|1|2|\n|2|3|''')
+assert(to_markdown_table([[1, 2], [2, 3]], ['a', 'b']) == '''|a   |b   |\n|----|----|\n|1   |2   |\n|2   |3   |''')
 assert(to_tex_table(np.array([[1, 2], [2, 3]]), ['a', 'b']) == '''a & b \\\\\n1 & 2 \\\\\n2 & 3 \\\\''')
 assert(to_tex_table(np.array([[1, 2], [2, 3]])) == '''1 & 2 \\\\\n2 & 3 \\\\''')
-
 assert(list(map(lambda e: e.tex(), from_strs(['1.2', '12', '0.12']))) == ['1.2', '1.2 \\times 10', '1.20 \\times 10^{-1}'])
+assert(to_markdown_table([[1, 2, 3], [4, 5, 6]], ['a', 'b'], transpose=True, row_header=[1, 2, 3])=='''|    |a   |b   |
+|----|----|----|
+|1   |1   |4   |
+|2   |2   |5   |
+|3   |3   |6   |''')
 
 # Calc
 assert(str(c(45, unit.m_, sig_figs=2)) == r'4.5 \times 10 \,\mathrm{m}')
@@ -69,7 +73,9 @@ b = c(40, unit.m_, 4, symbol='H')
 y = c(1, unit.m_, symbol='y')
 pi = c(math.pi, symbol='\\pi')
 assert((pi * (a + b)).symbol() == r'\pi \, \left( d + H \right)')
-assert((y * (a + b)).tex()[0] == '\\begin{align*}\n    &= 1 \,\mathrm{m} \\times \left( 1 \,\mathrm{m} + 4.000 \\times 10 \,\mathrm{m} \\right) \\\\\n    &= 4 \\times 10 \,\mathrm{m^{2}}\n\end{align*}')
+assert((y * (a + b)).tex()[0] ==
+       '\\begin{align*}\n    &= 1 \,\mathrm{m} \\times \left( 1 \,\mathrm{m} + 4.000 \\times 10 \,\mathrm{m} \\right) \\\\\n    &= 4 \\times 10 \,\mathrm{m^{2}}\n\end{align*}')
 assert(str('3.4' & unit.m_) == r'<3.4 <m>>')
 
 print('OK')
+
