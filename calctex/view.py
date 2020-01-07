@@ -1,4 +1,5 @@
 import numpy as np
+import unicodedata
 
 
 def _validate(data, header=[], transpose=False, row_header=None, corner=''):
@@ -44,7 +45,7 @@ def _to_str_list_w(widths):
     '''
     幅を指定して文字列のリストにする
     '''
-    return lambda data: list(map(lambda e: str(e[1]).ljust(widths[e[0]]), enumerate(data)))
+    return lambda data: list(map(lambda e: str(e[1]).ljust(widths[e[0]] - _len(e[1]) + len(e[1])), enumerate(data)))
 
 
 def _to_markdown_row(data, _to_str=_to_str_list):
@@ -73,6 +74,17 @@ def _to_str_matrix(data):
         return str(data)
 
 
+def _len(s):
+    count = 0
+    for c in s:
+        t = unicodedata.east_asian_width(c)
+        if t == 'F' or t == 'W' or t == 'A':
+            count += 2
+        else:
+            count += 1
+    return count
+
+
 def _max_str_len(data):
     '''
     リストの中で最も文字列長が長いものを求める
@@ -87,14 +99,14 @@ def _max_str_lens(data):
     '''
     各列ごとの最大の文字列長を求める
     '''
-    max_lens = np.max(np.frompyfunc(lambda e: len(e), 1, 1)(data), axis=0)
+    max_lens = np.max(np.frompyfunc(lambda e: _len(e), 1, 1)(data), axis=0)
     max_lens = np.where(max_lens < 3, 3, max_lens + 1)
     return max_lens
 
 
 def to_markdown_table(data, header=[], transpose=False, row_header=None, corner=''):
     data, header = _validate(data, header, transpose, row_header, corner)
-    
+
     # 列ごとの最大文字列長を求める
     header_str, data_str = _to_str_matrix(header), _to_str_matrix(data)
     max_lens = _max_str_lens(np.concatenate(
