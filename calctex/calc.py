@@ -192,7 +192,7 @@ class Calc:
 
     def __rtruediv__(self, other):
         if isinstance(other, Calc):
-            value = np.truediv(other.value, self.value)
+            value = np.true_divide(other.value, self.value)
             if self.parentheses:
                 if other.parentheses:
                     raw = r"\frac{\left( " + other.raw + r" \right)}{\left( " + self.raw + r" \right)}"

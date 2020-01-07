@@ -55,13 +55,13 @@ def _max_str_len(data):
         return len(data)
 
 
-def to_markdown_table(data, header=[], transpose=False, row_header=None, corner=' '*3):
+def to_markdown_table(data, header=[], transpose=False, row_header=None, corner=''):
     if row_header:
         header.insert(0, corner)
     data, header = _validate(data, header, transpose, row_header)
     result = []
     header_str, data_str = _to_str_matrix(header), _to_str_matrix(data)
-    max_len = _max_str_len([header_str, data_str, '---']) + 1
+    max_len = _max_str_len([header_str or [''], data_str or [''], '---']) + 1
     def transferer(e): return e.ljust(max_len)
     if len(header):
         result.append(_to_markdown_row(header_str, transferer))

@@ -11,3 +11,8 @@ def cumulative_tolerance(x):
     if not isinstance(x, np.ndarray):
         x = np.array(x)
     return (np.sum(x**2, axis=0))**0.5
+
+
+def with_uncertainty(x, uncertainty):
+    if not isinstance(x, np.ndarray) or not isinstance(uncertainty, np.ndarray) or x.shape != uncertainty.shape:
+        raise Exception('dimention error')
