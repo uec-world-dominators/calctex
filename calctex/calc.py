@@ -1,9 +1,10 @@
-#%%
+# %%
 from .common import roundtex
 from .value import Value
 from numpy import ndarray
 import numpy as np
 from .unit import *
+
 
 class Calc:
     def __init__(self, x, parentheses=False, raw=""):
@@ -179,6 +180,12 @@ class Calc:
 
     def __repr__(self):
         return str(self.raw)
+
+    def md(self):
+        if isinstance(self.value, Value):
+            return f"{self.raw} \n    = {self.value.tex()}"
+        else:
+            return [f"{e.raw} \n    = {e.value.tex()}" for e in self.value]
 
     def tex(self, variable="", how="first"):
         if isinstance(self.value, (Value, int, float)):
