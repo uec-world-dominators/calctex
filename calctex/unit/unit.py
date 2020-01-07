@@ -58,7 +58,11 @@ class Unit:
 
     def __rand__(self, e):
         from ..value import Value
-        return Value(e, self)
+        if isinstance(e, str):
+            from ..value import Value
+            return Value.from_str(e, self)
+        else:
+            return Value(float(e), self)
 
     def __add__(self, e):
         u = self.clone()
@@ -266,46 +270,47 @@ class Unit:
 
 
 # Scale
-zerodim = Unit({})
-kilo = zerodim.clone().set_scale(3)('k')
-hecto = zerodim.clone().set_scale(2)('h')
-centi = zerodim.clone().set_scale(-2)('c')
-mili = zerodim.clone().set_scale(-3)('m')
-micro = zerodim.clone().set_scale(-6)('μ')
-nano = zerodim.clone().set_scale(-9)('n')
+zerodim_ = Unit({})
+kilo_ = zerodim_.clone().set_scale(3)('k')
+hecto_ = zerodim_.clone().set_scale(2)('h')
+centi_ = zerodim_.clone().set_scale(-2)('c')
+mili_ = zerodim_.clone().set_scale(-3)('m')
+micro_ = zerodim_.clone().set_scale(-6)('μ')
+nano_ = zerodim_.clone().set_scale(-9)('n')
 
 # SI Basic Units
-m = Unit('m')
-kg = Unit('kg')
-s = Unit('s')
-A = Unit('A')
-K = Unit('K')
-mol = Unit('mol')
-cd = Unit('cd')
-rad = Unit('rad')
+m_ = Unit('m')
+kg_ = Unit('kg')
+s_ = Unit('s')
+A_ = Unit('A')
+K_ = Unit('K')
+mol_ = Unit('mol')
+cd_ = Unit('cd')
+rad_ = Unit('rad')
 
 # Units
-N = (kg * m * s**-2)('N')
-Pa = (N * m**-2)('Pa')
-C = (A * s)('C')
-J = (N * m)('J')
-V = (J / C)('V')
-F = (C / V)('F')
-W = (V * A)('W')
-Wb = (V * s)('Wb')
-T = (Wb / m ** -2)('T')
-H = (Wb / A)('H')
-Omega = (V / A)('Ω')
-Hz = (s ** -1)('Hz')
+g_ = (mili_ * kg_)('g')
+N_ = (kg_ * m_ * s_**-2)('N')
+Pa_ = (N_ * m_**-2)('Pa')
+C_ = (A_ * s_)('C')
+J_ = (N_ * m_)('J')
+V_ = (J_ / C_)('V')
+F_ = (C_ / V_)('F')
+W_ = (V_ * A_)('W')
+Wb_ = (V_ * s_)('Wb')
+T_ = (Wb_ / m_ ** -2)('T')
+H_ = (Wb_ / A_)('H')
+Omega_ = (V_ / A_)('Ω')
+Hz_ = (s_ ** -1)('Hz')
 
 # SI併用単位
-celcius = (K - 273)('℃')
-fahrenheit = (9 / 5.0 * K - 459.67)('°F')
-minute = (s / 60.0)('min')
-h = (minute / 60.0)('hour')
-d = (h / 24.0)('d')
-arc_degree = ((180 / math.pi) * rad)('°')
-arc_minute = (arc_degree * 60.0)('′')
-arc_second = (arc_minute * 60.0)('″')
-eV = (1.602176634e-19 * J)('eV')
-L = (kilo * (centi * m)**3)('L')
+celcius_ = (K_ - 273)('℃')
+fahrenheit_ = (9 / 5.0 * K_ - 459.67)('°F')
+minute_ = (s_ / 60.0)('min')
+h_ = (minute_ / 60.0)('hour')
+d_ = (h_ / 24.0)('d')
+arc_degree_ = ((180 / math.pi) * rad_)('°')
+arc_minute_ = (arc_degree_ * 60.0)('′')
+arc_second_ = (arc_minute_ * 60.0)('″')
+eV_ = (1.602176634e-19 * J_)('eV')
+L_ = (kilo_ * (centi_ * m_) ** 3)('L')

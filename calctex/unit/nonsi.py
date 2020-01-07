@@ -2,14 +2,14 @@ from .unit import *
 
 
 __all__ = [
-    'celcius',
-    'fahrenheit',
-    'minute',
-    'h',
-    'd',
-    'arc_degree',
-    'arc_minute',
-    'arc_second',
-    'eV',
-    'L'
+    'celcius_',
+    'fahrenheit_',
+    'minute_',
+    'h_',
+    'd_',
+    'arc_degree_',
+    'arc_minute_',
+    'arc_second_',
+    'eV_',
+    '_L'
 ]

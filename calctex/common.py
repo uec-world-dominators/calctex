@@ -34,6 +34,8 @@ def roundtex(value, significant=1):
     有効数字を考慮したTeX形式に変換
     '''
     assert(significant > 0)
+    minus = value < 0
+    value = abs(value)
     digits = value and math.floor(math.log10(value) + (value < 0))
     main = round_at(value * 10 ** -digits, significant)
-    return main + dot(significant, main) + zero_padding(significant, main) + toexp(digits)
+    return '-' * minus + main + dot(significant, main) + zero_padding(significant, main) + toexp(digits)
