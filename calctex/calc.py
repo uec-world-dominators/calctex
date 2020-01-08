@@ -208,7 +208,7 @@ class Calc:
                     raw = r"\frac{" + other.raw + r"}{" + self.raw + r"}"
                     symbol = r"\frac{" + other._symbol + r"}{" + self._symbol + r"}"
         else:
-            value = np.truediv(other, self.value)
+            value = np.true_divide(other, self.value)
             if self.parentheses:
                 raw = r"\frac{\left( " + str(other) + r" \right)}{" + self.raw + r"}"
                 symbol = r"\frac{\left( " + str(other) + r" \right)}{" + self._symbol + r"}"
