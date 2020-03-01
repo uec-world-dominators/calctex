@@ -10,7 +10,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 setup(
     name='calctex',
     packages=find_packages(),
-    version='1.0.5',
+    version='1.0.7',
     license='MIT',
     install_requires=['numpy'],
     author='shosatojp',

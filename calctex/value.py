@@ -107,7 +107,10 @@ class Value:
     def __repr__(self):
         return f"<{self.value} {self.unit}>"
 
-    def __or__(self,e):
+    def __str__(self):
+        return f"${self.tex()}$"
+
+    def __or__(self, e):
         _self = self.clone()
         _self.significant = e
         return _self
@@ -205,10 +208,10 @@ class Value:
         return self.fn(abs, multi_dim=True)
 
     def rint(self):
-            return self.fn(round, multi_dim=True)
+        return self.fn(round, multi_dim=True)
 
     @staticmethod
-    def from_str(data: [str], unit: Unit = Unit({})): 
+    def from_str(data: [str], unit: Unit = Unit({})):
         '''
         文字列から有効桁数を読み取る
         '''
